@@ -1,0 +1,10 @@
+version: 2
+
+secret:
+  # Ces fichiers sont générés automatiquement par JHipster et contiennent
+  # des valeurs d'exemple publiques, documentées sur jhipster.tech.
+  # Ce ne sont pas de vrais identifiants de production: voir PR #2 et #9
+  # pour le contexte complet de cette exclusion.
+  ignored_paths:
+    - 'src/main/resources/config/application-secret-samples.yml'
+    - 'src/main/docker/jhipster-control-center.yml'
