@@ -3,6 +3,8 @@ package com.stg.petclinic.service;
 import com.stg.petclinic.domain.RendezVous;
 import com.stg.petclinic.repository.RendezVousRepository;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -88,6 +90,20 @@ public class RendezVousService {
     public Page<RendezVous> findAll(Pageable pageable) {
         LOG.debug("Request to get all RendezVouses");
         return rendezVousRepository.findAll(pageable);
+    }
+
+    /**
+     * Récupère tous les rendez-vous du jour (utilisé par le dashboard, cf. G6).
+     *
+     * @return la liste des rendez-vous prévus aujourd'hui.
+     */
+    @Transactional(readOnly = true)
+    public List<RendezVous> findRendezVousDuJour() {
+        LOG.debug("Request to get today's RendezVouses");
+        LocalDate aujourdHui = LocalDate.now();
+        Instant debutJournee = aujourdHui.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant finJournee = aujourdHui.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        return rendezVousRepository.findByDateBetween(debutJournee, finJournee);
     }
 
     /**

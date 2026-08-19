@@ -72,7 +72,8 @@ describe('Medecin Management Component', () => {
   it('should call load all on init', async () => {
     // WHEN
     TestBed.tick();
-    const req = httpMock.expectOne({ method: 'GET' });
+    httpMock.expectOne(r => r.url.includes('cliniques')).flush([]);
+    const req = httpMock.expectOne(r => r.url.includes('medecins'));
     req.flush([{ id: 19080 }], { headers: { link: '<http://localhost/api/foo?page=1&size=20>; rel="next"' } });
     await vitest.runAllTimersAsync();
 
@@ -84,13 +85,14 @@ describe('Medecin Management Component', () => {
   it('should cancel previous requests when loading a new page', async () => {
     // WHEN
     TestBed.tick();
-    const req = httpMock.expectOne({ method: 'GET' });
+    httpMock.expectOne(r => r.url.includes('cliniques')).flush([]);
+    const req = httpMock.expectOne(r => r.url.includes('medecins'));
     await vitest.runAllTimersAsync();
 
     comp.page.set(3);
     comp.load();
     await vitest.runAllTimersAsync();
-    const req2 = httpMock.expectOne({ method: 'GET' });
+    const req2 = httpMock.expectOne(r => r.url.includes('medecins'));
     req2.flush([{ id: 19080 }], { headers: { link: '<http://localhost/api/foo?page=1&size=20>; rel="next"' } });
     await vitest.runAllTimersAsync();
 
@@ -103,7 +105,8 @@ describe('Medecin Management Component', () => {
   it('should not fail on resource error state', async () => {
     // GIVEN - first load triggers an HTTP error
     TestBed.tick();
-    const errorReq = httpMock.expectOne({ method: 'GET' });
+    httpMock.expectOne(r => r.url.includes('cliniques')).flush([]);
+    const errorReq = httpMock.expectOne(r => r.url.includes('medecins'));
     errorReq.flush('error', { status: 500, statusText: 'Server Error' });
     await vitest.runAllTimersAsync();
 
@@ -158,7 +161,8 @@ describe('Medecin Management Component', () => {
   it('should calculate the sort attribute for an id', () => {
     // WHEN
     TestBed.tick();
-    httpMock.expectOne({ method: 'GET' });
+    httpMock.expectOne(r => r.url.includes('cliniques'));
+    httpMock.expectOne(r => r.url.includes('medecins'));
 
     // THEN
     expect(service.medecinsParams()).toMatchObject(expect.objectContaining({ sort: ['id,desc'] }));

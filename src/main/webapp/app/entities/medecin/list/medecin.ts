@@ -1,4 +1,4 @@
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap, Router, RouterLink } from '@angular/router';
@@ -7,10 +7,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap/modal';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap/pagination';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Subscription, combineLatest, filter, tap } from 'rxjs';
+import { Subscription, combineLatest, filter, map, tap } from 'rxjs';
 
 import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
+import { IClinique } from 'app/entities/clinique/clinique.model';
+import { CliniqueService } from 'app/entities/clinique/service/clinique.service';
 import { Alert } from 'app/shared/alert/alert';
 import { AlertError } from 'app/shared/alert/alert-error';
 import { TranslateDirective } from 'app/shared/language';
@@ -48,12 +50,17 @@ export class Medecin implements OnInit {
   readonly totalItems = signal(0);
   readonly page = signal(1);
 
+  readonly cliniqueFilter = signal<number | null>(null);
+  readonly specialiteFilter = signal<string>('');
+  readonly cliniquesForFilter = signal<IClinique[]>([]);
+
   readonly router = inject(Router);
   protected readonly medecinService = inject(MedecinService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   readonly isLoading = this.medecinService.medecinsResource.isLoading;
   protected readonly activatedRoute = inject(ActivatedRoute);
   protected readonly sortService = inject(SortService);
+  protected readonly cliniqueService = inject(CliniqueService);
   protected modalService = inject(NgbModal);
 
   constructor() {
@@ -77,6 +84,11 @@ export class Medecin implements OnInit {
         tap(() => this.load()),
       )
       .subscribe();
+
+    this.cliniqueService
+      .query({ size: 9999 })
+      .pipe(map((res: HttpResponse<IClinique[]>) => res.body ?? []))
+      .subscribe((cliniques: IClinique[]) => this.cliniquesForFilter.set(cliniques));
   }
 
   delete(medecin: IMedecin): void {
@@ -103,10 +115,27 @@ export class Medecin implements OnInit {
     this.handleNavigation(page, this.sortState());
   }
 
+  applyFilters(): void {
+    this.handleNavigation(1, this.sortState());
+  }
+
+  onCliniqueFilterChange(value: string): void {
+    this.cliniqueFilter.set(value ? +value : null);
+    this.applyFilters();
+  }
+
+  onSpecialiteFilterChange(value: string): void {
+    this.specialiteFilter.set(value.trim());
+    this.applyFilters();
+  }
+
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
     const page = params.get(PAGE_HEADER);
     this.page.set(+(page ?? 1));
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
+    const cliniqueId = params.get('cliniqueId');
+    this.cliniqueFilter.set(cliniqueId ? +cliniqueId : null);
+    this.specialiteFilter.set(params.get('specialite') ?? '');
   }
 
   protected fillComponentAttributesFromResponseBody(data: IMedecin[]): IMedecin[] {
@@ -124,14 +153,24 @@ export class Medecin implements OnInit {
       size: this.itemsPerPage(),
       sort: this.sortService.buildSortParam(this.sortState()),
     };
+    const cliniqueId = this.cliniqueFilter();
+    if (cliniqueId) {
+      queryObject.cliniqueId = cliniqueId;
+    }
+    const specialite = this.specialiteFilter();
+    if (specialite) {
+      queryObject.specialite = specialite;
+    }
     this.medecinService.medecinsParams.set(queryObject);
   }
 
   protected handleNavigation(page: number, sortState: SortState): void {
-    const queryParamsObj = {
+    const queryParamsObj: any = {
       page,
       size: this.itemsPerPage(),
       sort: this.sortService.buildSortParam(sortState),
+      cliniqueId: this.cliniqueFilter() || null,
+      specialite: this.specialiteFilter() || null,
     };
 
     this.router.navigate(['./'], {

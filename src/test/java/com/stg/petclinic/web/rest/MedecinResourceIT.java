@@ -240,6 +240,22 @@ class MedecinResourceIT {
 
     @Test
     @Transactional
+    void checkEmailIsInvalid() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set an email that does not match the expected pattern
+        medecin.setEmail("not-an-email");
+
+        // Create the Medecin, which fails.
+
+        restMedecinMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(medecin)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllMedecins() throws Exception {
         // Initialize the database
         insertedMedecin = medecinRepository.saveAndFlush(medecin);

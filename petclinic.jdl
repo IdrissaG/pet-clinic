@@ -80,3 +80,4 @@ paginate Clinique, Medecin, Client, Animal, RendezVous, PeserAnimal with paginat
 service Clinique, Medecin, Client, Animal, RendezVous, PeserAnimal with serviceClass
 
 filter Animal
+

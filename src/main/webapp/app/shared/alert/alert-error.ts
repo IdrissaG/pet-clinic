@@ -57,6 +57,7 @@ export class AlertError implements OnDestroy {
 
   private addErrorAlert(message?: string, translationKey?: string, translationParams?: Record<string, unknown>): void {
     this.alertService.addAlert({ type: 'danger', message, translationKey, translationParams }, this.alerts());
+    this.alerts.set([...this.alerts()]);
   }
 
   private handleHttpError(response: EventWithContent<unknown> | string): void {
@@ -98,7 +99,11 @@ export class AlertError implements OnDestroy {
         httpErrorResponse.error.params,
       );
     } else {
-      this.addErrorAlert(httpErrorResponse.error, httpErrorResponse.error);
+      this.addErrorAlert(
+        httpErrorResponse.error.detail, // "Impossible de créer un rendez-vous dans le passé." → texte affiché
+        httpErrorResponse.error.message, // "error.rendezVousDatePassee" → clé de traduction (optionnelle)
+        httpErrorResponse.error.params,
+      );
     }
   }
 

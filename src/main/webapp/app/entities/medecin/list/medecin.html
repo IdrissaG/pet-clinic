@@ -24,6 +24,36 @@
 
   <jhi-alert />
 
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label" for="filter_clinique" jhiTranslate="petclinicApp.medecin.clinique">Clinique</label>
+      <select
+        class="form-control"
+        id="filter_clinique"
+        name="filterClinique"
+        [ngModel]="cliniqueFilter()"
+        (ngModelChange)="onCliniqueFilterChange($event)"
+      >
+        <option [ngValue]="null" jhiTranslate="petclinicApp.medecin.filter.allCliniques">Toutes les cliniques</option>
+        @for (clinique of cliniquesForFilter(); track clinique.id) {
+        <option [ngValue]="clinique.id">{{ clinique.nom }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="filter_specialite" jhiTranslate="petclinicApp.medecin.specialite">Specialite</label>
+      <input
+        type="text"
+        class="form-control"
+        id="filter_specialite"
+        name="filterSpecialite"
+        #specialiteInput
+        [ngModel]="specialiteFilter()"
+        (change)="onSpecialiteFilterChange(specialiteInput.value)"
+      />
+    </div>
+  </div>
+
   @if (medecins().length === 0) {
   <div class="alert alert-warning" id="no-result">
     <span jhiTranslate="petclinicApp.medecin.home.notFound">Aucun Medecin trouvé</span>

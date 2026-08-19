@@ -142,9 +142,13 @@ public class MedecinResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Medecins in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Medecin>> getAllMedecins(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<Medecin>> getAllMedecins(
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable,
+        @RequestParam(required = false) Long cliniqueId,
+        @RequestParam(required = false) String specialite
+    ) {
         LOG.debug("REST request to get a page of Medecins");
-        Page<Medecin> page = medecinService.findAll(pageable);
+        Page<Medecin> page = medecinService.findAll(pageable, cliniqueId, specialite);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

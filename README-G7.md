@@ -115,3 +115,18 @@ npm run docker:db:down
    Une fois connecté en tant qu'`admin`, dans le menu en haut de la page apparaît l'option pour voir les **Entities** : il donne accès aux listes et formulaires CRUD de toutes les entités (`Clinique`, `Medecin`, `Client`, `Animal`, `RendezVous`, `PeserAnimal`).
 
 ---
+
+# Fichiers à ne pas modifier : secrets d'exemple JHipster
+
+Les fichiers suivants contiennent un secret JWT d'exemple **public**, généré par
+défaut par JHipster (documenté sur jhipster.tech) :
+
+- `src/main/resources/config/application-secret-samples.yml`
+- `src/main/docker/jhipster-control-center.yml`
+
+Ce n'est pas un identifiant réel compromis, voir PR #2, #9, #10 pour le contexte
+complet. GitGuardian les signale comme "secret détecté", mais toute PR qui ne
+touche pas ces fichiers n'est pas concernée par cette alerte.
+
+**Ne modifiez pas ces fichiers** sans nécessité, pour éviter de redéclencher
+inutilement un scan GitGuardian dessus.

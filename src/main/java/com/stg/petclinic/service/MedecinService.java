@@ -84,6 +84,20 @@ public class MedecinService {
     }
 
     /**
+     * Get all the medecins matching the given filters.
+     *
+     * @param pageable the pagination information.
+     * @param cliniqueId optional clinique id filter.
+     * @param specialite optional specialite filter (partial, case-insensitive).
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<Medecin> findAll(Pageable pageable, Long cliniqueId, String specialite) {
+        LOG.debug("Request to get all Medecins with cliniqueId={}, specialite={}", cliniqueId, specialite);
+        return medecinRepository.findByFilters(cliniqueId, specialite, pageable);
+    }
+
+    /**
      * Get one medecin by id.
      *
      * @param id the id of the entity.

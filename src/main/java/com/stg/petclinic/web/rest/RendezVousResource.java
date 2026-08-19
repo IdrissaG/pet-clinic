@@ -159,6 +159,17 @@ public class RendezVousResource {
     }
 
     /**
+     * {@code GET  /rendez-vous/today} : get today's Rendez Vous (utilisé par le dashboard G6).
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of today's Rendez Vous in body.
+     */
+    @GetMapping("/today")
+    public ResponseEntity<List<RendezVous>> getRendezVousDuJour() {
+        LOG.debug("REST request to get today's RendezVouses");
+        return ResponseEntity.ok(rendezVousService.findRendezVousDuJour());
+    }
+
+    /**
      * {@code GET  /rendez-vous/:id} : get the "id" rendezVous.
      *
      * @param id the id of the rendezVous to retrieve.

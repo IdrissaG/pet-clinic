@@ -1,6 +1,8 @@
 package com.stg.petclinic.repository;
 
 import com.stg.petclinic.domain.RendezVous;
+import java.time.Instant;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {}
+public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
+    List<RendezVous> findByDateBetween(Instant debut, Instant fin);
+}
