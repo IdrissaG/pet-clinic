@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center">
+﻿<div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2
@@ -6,7 +6,7 @@
         data-cy="PeserAnimalCreateUpdateHeading"
         jhiTranslate="petclinicApp.peserAnimal.home.createOrEditLabel"
       >
-        Créer ou éditer un Peser Animal
+        CrÃ©er ou Ã©diter un Peser Animal
       </h2>
 
       <div>
@@ -28,7 +28,7 @@
             <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
             }
             <small class="form-text text-danger" [hidden]="!poidsRef.errors?.number" jhiTranslate="entity.validation.number"
-              >Ce champ doit être un nombre.</small
+              >Ce champ doit Ãªtre un nombre.</small
             >
           </div>
           }
@@ -96,6 +96,7 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
           class="btn btn-primary"
+          data-cy="entitySaveButton"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

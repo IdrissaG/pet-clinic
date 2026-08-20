@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center">
+﻿<div class="d-flex justify-content-center">
   <div class="col-8">
     @if (animal(); as animalRef) {
     <div>
@@ -51,7 +51,7 @@
         <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
-      <button type="button" [routerLink]="['/animal', animalRef.id, 'edit']" class="btn btn-primary">
+      <button type="button" [routerLink]="['/animal', animalRef.id, 'edit']" class="btn btn-primary" data-cy="entityEditButton">
         <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </button>
     </div>

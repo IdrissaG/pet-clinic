@@ -1,9 +1,9 @@
-<div>
+﻿<div>
   <h2 id="page-heading" data-cy="CliniqueHeading">
     <span jhiTranslate="petclinicApp.clinique.home.title">Cliniques</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+      <button class="btn btn-info me-2 btn-refresh-list" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
         <span jhiTranslate="petclinicApp.clinique.home.refreshListLabel">Actualiser la liste</span>
       </button>
@@ -15,7 +15,7 @@
         [routerLink]="['/clinique/new']"
       >
         <fa-icon icon="plus" />
-        <span jhiTranslate="petclinicApp.clinique.home.createLabel">Créer un nouveau Clinique</span>
+        <span jhiTranslate="petclinicApp.clinique.home.createLabel">CrÃ©er un nouveau Clinique</span>
       </button>
     </div>
   </h2>
@@ -24,9 +24,22 @@
 
   <jhi-alert />
 
-  @if (cliniques().length === 0) {
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="{{ 'petclinicApp.clinique.home.search' | translate }}"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="updateSearchTerm($event)"
+        name="searchTerm"
+      />
+    </div>
+  </div>
+
+  @if (filteredCliniques().length === 0) {
   <div class="alert alert-warning" id="no-result">
-    <span jhiTranslate="petclinicApp.clinique.home.notFound">Aucun Clinique trouvé</span>
+    <span jhiTranslate="petclinicApp.clinique.home.notFound">Aucun Clinique trouvÃ©</span>
   </div>
   } @else {
   <div class="table-responsive table-entities" id="entities">
@@ -65,7 +78,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (clinique of cliniques(); track trackId(clinique)) {
+        @for (clinique of filteredCliniques(); track trackId(clinique)) {
         <tr data-cy="entityTable">
           <td><a [routerLink]="['/clinique', clinique.id, 'view']">{{ clinique.id }}</a></td>
           <td>{{ clinique.nom }}</td>
@@ -94,9 +107,10 @@
       </tbody>
     </table>
   </div>
-  } @if (cliniques().length > 0) {
+  } @if (filteredCliniques().length > 0) {
   <div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between align-items-end">
+      <img src="content/images/sonatel-orange-logo.jpg" alt="Sonatel Orange" style="height: 70px" />
       <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
     </div>
 

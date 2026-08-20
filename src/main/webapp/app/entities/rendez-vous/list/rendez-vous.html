@@ -1,9 +1,9 @@
-<div>
+﻿<div>
   <h2 id="page-heading" data-cy="RendezVousHeading">
     <span jhiTranslate="petclinicApp.rendezVous.home.title">RendezVouses</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+      <button class="btn btn-info me-2 btn-refresh-list" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
         <span jhiTranslate="petclinicApp.rendezVous.home.refreshListLabel">Actualiser la liste</span>
       </button>
@@ -15,7 +15,7 @@
         [routerLink]="['/rendez-vous/new']"
       >
         <fa-icon icon="plus" />
-        <span jhiTranslate="petclinicApp.rendezVous.home.createLabel">Créer un nouveau Rendez Vous</span>
+        <span jhiTranslate="petclinicApp.rendezVous.home.createLabel">CrÃ©er un nouveau Rendez Vous</span>
       </button>
     </div>
   </h2>
@@ -26,7 +26,7 @@
 
   @if (rendezVouses().length === 0) {
   <div class="alert alert-warning" id="no-result">
-    <span jhiTranslate="petclinicApp.rendezVous.home.notFound">Aucun Rendez Vous trouvé</span>
+    <span jhiTranslate="petclinicApp.rendezVous.home.notFound">Aucun Rendez Vous trouvÃ©</span>
   </div>
   } @else {
   <div class="table-responsive table-entities" id="entities">
@@ -135,7 +135,8 @@
   </div>
   } @if (rendezVouses().length > 0) {
   <div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between align-items-end">
+      <img src="content/images/sonatel-orange-logo.jpg" alt="Sonatel Orange" style="height: 70px" />
       <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
     </div>
 

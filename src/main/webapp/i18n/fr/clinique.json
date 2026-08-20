@@ -3,6 +3,7 @@
     "clinique": {
       "home": {
         "title": "Cliniques",
+        "search": "Rechercher par nom ou adresse...",
         "refreshListLabel": "Actualiser la liste",
         "createLabel": "Créer un nouveau Clinique",
         "createOrEditLabel": "Créer ou éditer un Clinique",

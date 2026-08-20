@@ -1,8 +1,8 @@
-<div class="d-flex justify-content-center">
+﻿<div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2 id="jhi-client-heading" data-cy="ClientCreateUpdateHeading" jhiTranslate="petclinicApp.client.home.createOrEditLabel">
-        Créer ou éditer un Client
+        CrÃ©er ou Ã©diter un Client
       </h2>
 
       <div>
@@ -66,7 +66,7 @@
           <div>
             @if (emailRef.errors?.pattern) {
             <small class="form-text text-danger" jhiTranslate="entity.validation.pattern" [translateValues]="{ pattern: 'Email' }"
-              >Ce champ doit suivre l&apos;expression régulière Email.</small
+              >Ce champ doit suivre l&apos;expression rÃ©guliÃ¨re Email.</small
             >
             }
           </div>
@@ -85,6 +85,7 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
           class="btn btn-primary"
+          data-cy="entitySaveButton"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

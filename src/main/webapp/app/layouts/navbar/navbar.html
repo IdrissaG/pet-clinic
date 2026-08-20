@@ -1,4 +1,4 @@
-<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-dark">
+﻿<nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
       <span class="logo-img"></span>
@@ -17,6 +17,8 @@
     >
       <fa-icon icon="bars" />
     </a>
+
+    <img src="content/images/logosonatel.png" alt="Sonatel" class="navbar-sonatel-brand" />
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed()">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
@@ -39,7 +41,7 @@
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
             <span>
               <fa-icon icon="th-list" />
-              <span jhiTranslate="global.menu.entities.main">Entités</span>
+              <span jhiTranslate="global.menu.entities.main">EntitÃ©s</span>
             </span>
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="entity-menu">
@@ -163,7 +165,7 @@
             <li>
               <a class="dropdown-item" routerLink="/admin/metrics" routerLinkActive="active" (click)="collapseNavbar()">
                 <fa-icon icon="tachometer-alt" [fixedWidth]="true" />
-                <span jhiTranslate="global.menu.admin.metrics">Métriques</span>
+                <span jhiTranslate="global.menu.admin.metrics">MÃ©triques</span>
               </a>
             </li>
             <li>
@@ -267,7 +269,7 @@
             <li>
               <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
                 <fa-icon icon="sign-out-alt" [fixedWidth]="true" />
-                <span jhiTranslate="global.menu.account.logout">Déconnexion</span>
+                <span jhiTranslate="global.menu.account.logout">DÃ©connexion</span>
               </a>
             </li>
             } @else {
@@ -286,7 +288,7 @@
                 data-cy="register"
               >
                 <fa-icon icon="user-plus" [fixedWidth]="true" />
-                <span jhiTranslate="global.menu.account.register">Créer un compte</span>
+                <span jhiTranslate="global.menu.account.register">CrÃ©er un compte</span>
               </a>
             </li>
             }

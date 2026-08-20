@@ -1,9 +1,9 @@
-<div>
+﻿<div>
   <h2 id="page-heading" data-cy="AnimalHeading">
     <span jhiTranslate="petclinicApp.animal.home.title">Animals</span>
 
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+      <button class="btn btn-info me-2 btn-refresh-list" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
         <span jhiTranslate="petclinicApp.animal.home.refreshListLabel">Actualiser la liste</span>
       </button>
@@ -15,7 +15,7 @@
         [routerLink]="['/animal/new']"
       >
         <fa-icon icon="plus" />
-        <span jhiTranslate="petclinicApp.animal.home.createLabel">Créer un nouveau Animal</span>
+        <span jhiTranslate="petclinicApp.animal.home.createLabel">CrÃ©er un nouveau Animal</span>
       </button>
     </div>
   </h2>
@@ -26,7 +26,7 @@
 
   @if (animals().length === 0) {
   <div class="alert alert-warning" id="no-result">
-    <span jhiTranslate="petclinicApp.animal.home.notFound">Aucun Animal trouvé</span>
+    <span jhiTranslate="petclinicApp.animal.home.notFound">Aucun Animal trouvÃ©</span>
   </div>
   } @else {
   <div class="table-responsive table-entities" id="entities">
@@ -123,7 +123,8 @@
   </div>
   } @if (animals().length > 0) {
   <div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between align-items-end">
+      <img src="content/images/sonatel-orange-logo.jpg" alt="Sonatel Orange" style="height: 70px" />
       <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
     </div>
 
