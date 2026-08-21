@@ -3,47 +3,65 @@
     <span jhiTranslate="petclinicApp.rendezVous.home.title">RendezVouses</span>
 
     <!-- Carte de Recherche & Filtres - Module Rendez-vous -->
-    <div class="search-bar-container bg-white rounded-4 p-3 shadow-sm border mb-4">
+    <div class="search-bar-container bg-white rounded-4 p-3 shadow-sm border my-3">
       <div class="row g-3 align-items-end">
-        <!-- Champ Recherche -->
-        <div class="col-12 col-md-4 col-lg-3">
-          <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="petclinicApp.rendezVous.search.label">Rechercher</label>
-          <div class="input-group">
-            <span class="input-group-text bg-light border-end-0 text-muted ps-3"> 🔍 </span>
-            <input
-              type="text"
-              class="form-control bg-light border-start-0 ps-0 shadow-none"
-              placeholder="Client, animal, motif..."
-              jhiTranslate="petclinicApp.rendezVous.search.placeholder"
-            />
-          </div>
-        </div>
-
         <!-- Filtre par Date -->
-        <div class="col-12 col-md-4 col-lg-3">
-          <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="petclinicApp.rendezVous.search.date">Date</label>
-          <input type="date" class="form-control bg-light border-0 shadow-none" />
+        <div class="col-12 col-md-6 col-lg-3">
+          <label class="form-label small fw-semibold text-muted mb-1">Date</label>
+          <input
+            type="date"
+            class="form-control bg-light border-0 shadow-none"
+            [ngModel]="dateFilter()"
+            (ngModelChange)="onDateChange($event)"
+          />
         </div>
 
-        <!-- Filtre par Statut / Durée -->
-        <div class="col-12 col-md-4 col-lg-2">
-          <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="petclinicApp.rendezVous.search.statut">Statut</label>
-          <select class="form-select bg-light border-0 shadow-none">
-            <option selected value="" jhiTranslate="petclinicApp.rendezVous.search.allStatuts">Tous les statuts</option>
-            <option value="PLANIFIE">Planifié</option>
-            <option value="TERMINE">Terminé</option>
-            <option value="ANNULE">Annulé</option>
-          </select>
+        <!-- Filtre par Animal -->
+        <div class="col-12 col-md-6 col-lg-3">
+          <label class="form-label small fw-semibold text-muted mb-1">Animal</label>
+          <input
+            type="text"
+            class="form-control bg-light border-0 shadow-none"
+            placeholder="Nom d'animal..."
+            [ngModel]="animalFilter()"
+            (ngModelChange)="onAnimalChange($event)"
+          />
         </div>
 
-        <!-- Boutons d'action -->
-        <div class="col-12 col-lg-4 d-flex gap-2">
-          <button type="button" class="btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center gap-2">
+        <!-- Filtre par Médecin -->
+        <div class="col-12 col-md-6 col-lg-2">
+          <label class="form-label small fw-semibold text-muted mb-1">Médecin</label>
+          <input
+            type="text"
+            class="form-control bg-light border-0 shadow-none"
+            placeholder="Médecin..."
+            [ngModel]="medecinFilter()"
+            (ngModelChange)="onMedecinChange($event)"
+          />
+        </div>
+
+        <!-- Filtre par Clinique -->
+        <div class="col-12 col-md-6 col-lg-2">
+          <label class="form-label small fw-semibold text-muted mb-1">Clinique</label>
+          <input
+            type="text"
+            class="form-control bg-light border-0 shadow-none"
+            placeholder="Clinique..."
+            [ngModel]="cliniqueFilter()"
+            (ngModelChange)="onCliniqueChange($event)"
+          />
+        </div>
+
+        <!-- Bouton Réinitialiser -->
+        <div class="col-12 col-lg-2">
+          <button
+            type="button"
+            class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+            (click)="resetFilters()"
+          >
             <i class="fa-solid fa-rotate-left"></i>
             <span>Réinitialiser</span>
           </button>
-
-          <button type="button" class="btn btn-primary w-50 fw-semibold py-2">Filtrer</button>
         </div>
       </div>
     </div>
@@ -70,7 +88,7 @@
 
   <jhi-alert />
 
-  @if (rendezVouses().length === 0) {
+  @if (filteredRendezVouses().length === 0) {
   <div class="alert alert-warning" id="no-result">
     <span jhiTranslate="petclinicApp.rendezVous.home.notFound">Aucun Rendez Vous trouvé</span>
   </div>
@@ -129,7 +147,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (rendezVous of rendezVouses(); track trackId(rendezVous)) {
+        @for (rendezVous of filteredRendezVouses(); track trackId(rendezVous)) {
         <tr data-cy="entityTable">
           <td><a [routerLink]="['/rendez-vous', rendezVous.id, 'view']">{{ rendezVous.id }}</a></td>
           <td>{{ rendezVous.date | formatMediumDatetime }}</td>
@@ -179,7 +197,7 @@
       </tbody>
     </table>
   </div>
-  } @if (rendezVouses().length > 0) {
+  } @if (filteredRendezVouses().length > 0) {
   <div>
     <div class="d-flex justify-content-center">
       <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />

@@ -62,6 +62,9 @@ export class Client implements OnInit {
   protected modalService = inject(NgbModal);
   private readonly iconLibrary = inject(FaIconLibrary);
 
+  // Signal pour capturer la saisie utilisateur
+  readonly searchInputSignal = signal<string>('');
+
   constructor() {
     // Enregistrement explicite de l'icône faPhone et des icônes courantes de la liste
     this.iconLibrary.addIcons(faPhone, faTrash, faEye, faPencilAlt, faPlus, faSort, faSync, faSearch, faTimes);
@@ -126,6 +129,7 @@ export class Client implements OnInit {
     this.page.set(+(page ?? 1));
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
     this.currentSearch = params.get('query') ?? '';
+    this.searchInputSignal.set(this.currentSearch);
   }
 
   protected fillComponentAttributesFromResponseBody(data: IClient[]): IClient[] {
@@ -166,5 +170,17 @@ export class Client implements OnInit {
       relativeTo: this.activatedRoute,
       queryParams: queryParamsObj,
     });
+  }
+
+  // Recherche automatique sur la saisie
+  onSearchChange(query: string): void {
+    this.searchInputSignal.set(query);
+    this.search(query);
+  }
+
+  // Réinitialisation du champ et recharge
+  resetFilters(): void {
+    this.searchInputSignal.set('');
+    this.clearSearch();
   }
 }

@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap, Router, RouterLink } from '@angular/router';
 
@@ -50,6 +50,43 @@ export class RendezVous implements OnInit {
   readonly totalItems = signal(0);
   readonly page = signal(1);
 
+  // Signals pour les filtres en direct
+  readonly dateFilter = signal<string>('');
+  readonly animalFilter = signal<string>('');
+  readonly medecinFilter = signal<string>('');
+  readonly cliniqueFilter = signal<string>('');
+
+  // Signal dérivé : Filtrage réactif local
+  readonly filteredRendezVouses = computed(() => {
+    const date = this.dateFilter();
+    const animal = this.animalFilter().toLowerCase().trim();
+    const medecin = this.medecinFilter().toLowerCase().trim();
+    const clinique = this.cliniqueFilter().toLowerCase().trim();
+
+    return this.rendezVouses().filter(rdv => {
+      // Extraction date (Dayjs ou String)
+      let rdvDateStr = '';
+      const rawDate: any = (rdv as any).date ?? (rdv as any).dateHeure;
+      if (rawDate) {
+        if (typeof rawDate.format === 'function') {
+          rdvDateStr = rawDate.format('YYYY-MM-DD');
+        } else if (typeof rawDate === 'string') {
+          rdvDateStr = rawDate.slice(0, 10);
+        }
+      }
+
+      const matchesDate = !date || rdvDateStr === date;
+      const matchesAnimal = !animal || ((rdv as any).animal?.nom?.toLowerCase().includes(animal) ?? false);
+      const matchesMedecin =
+        !medecin ||
+        ((rdv as any).medecin?.nom?.toLowerCase().includes(medecin) ?? false) ||
+        ((rdv as any).medecin?.prenom?.toLowerCase().includes(medecin) ?? false);
+      const matchesClinique = !clinique || ((rdv as any).clinique?.nom?.toLowerCase().includes(clinique) ?? false);
+
+      return matchesDate && matchesAnimal && matchesMedecin && matchesClinique;
+    });
+  });
+
   readonly router = inject(Router);
   protected readonly rendezVousService = inject(RendezVousService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -95,6 +132,29 @@ export class RendezVous implements OnInit {
 
   load(): void {
     this.queryBackend();
+  }
+
+  onDateChange(value: string): void {
+    this.dateFilter.set(value);
+  }
+
+  onAnimalChange(value: string): void {
+    this.animalFilter.set(value);
+  }
+
+  onMedecinChange(value: string): void {
+    this.medecinFilter.set(value);
+  }
+
+  onCliniqueChange(value: string): void {
+    this.cliniqueFilter.set(value);
+  }
+
+  resetFilters(): void {
+    this.dateFilter.set('');
+    this.animalFilter.set('');
+    this.medecinFilter.set('');
+    this.cliniqueFilter.set('');
   }
 
   navigateToWithComponentValues(event: SortState): void {

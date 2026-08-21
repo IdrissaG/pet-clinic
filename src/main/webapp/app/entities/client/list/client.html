@@ -5,30 +5,34 @@
     <!-- Carte de Recherche & Filtres - Module Clients -->
     <div class="search-bar-container bg-white rounded-4 p-3 shadow-sm border mb-4">
       <div class="row g-3 align-items-end">
-        <!-- Champ Recherche -->
-        <div class="col-12 col-md-8 col-lg-8">
-          <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="petclinicApp.client.search.label"
-            >Rechercher un client</label
-          >
+        <!-- Champ Recherche Automatique -->
+        <div class="col-12 col-md-8 col-lg-9">
+          <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="petclinicApp.client.search.label">
+            Rechercher un client
+          </label>
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0 text-muted ps-3"> 🔍 </span>
             <input
               type="text"
               class="form-control bg-light border-start-0 ps-0 shadow-none"
-              placeholder="Nom, prénom, téléphone, email..."
+              placeholder="Nom, prénom"
               jhiTranslate="petclinicApp.client.search.placeholder"
+              [ngModel]="searchInputSignal()"
+              (ngModelChange)="onSearchChange($event)"
             />
           </div>
         </div>
 
-        <!-- Boutons d'action -->
-        <div class="col-12 col-md-4 col-lg-4 d-flex gap-2">
-          <button type="button" class="btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center gap-2">
+        <!-- Bouton Réinitialiser  -->
+        <div class="col-12 col-md-4 col-lg-3">
+          <button
+            type="button"
+            class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+            (click)="resetFilters()"
+          >
             <i class="fa-solid fa-rotate-left"></i>
             <span>Réinitialiser</span>
           </button>
-
-          <button type="button" class="btn btn-primary w-50 fw-semibold py-2">Filtrer</button>
         </div>
       </div>
     </div>

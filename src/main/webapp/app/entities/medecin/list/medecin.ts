@@ -178,4 +178,10 @@ export class Medecin implements OnInit {
       queryParams: queryParamsObj,
     });
   }
+
+  resetFilters(): void {
+    this.specialiteFilter.set('');
+    this.cliniqueFilter.set(null);
+    this.applyFilters();
+  }
 }

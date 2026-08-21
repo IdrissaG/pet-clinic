@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap, Router, RouterLink } from '@angular/router';
 
@@ -55,6 +55,8 @@ export class Clinique implements OnInit {
   protected readonly activatedRoute = inject(ActivatedRoute);
   protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
+
+  readonly searchTerm = signal<string>('');
 
   constructor() {
     effect(() => {
@@ -138,5 +140,26 @@ export class Clinique implements OnInit {
       relativeTo: this.activatedRoute,
       queryParams: queryParamsObj,
     });
+  }
+
+  // Signal dérivé qui filtre la liste des cliniques en mémoire (par nom, adresse)
+  readonly filteredCliniques = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) {
+      return this.cliniques();
+    }
+    return this.cliniques().filter(
+      clinique => clinique.nom?.toLowerCase().includes(term) || clinique.adresse?.toLowerCase().includes(term),
+    );
+  });
+
+  // Méthode pour la mise à jour de la recherche
+  onSearchTermChange(value: string): void {
+    this.searchTerm.set(value);
+  }
+
+  // Méthode pour réinitialiser le champ
+  resetFilters(): void {
+    this.searchTerm.set('');
   }
 }
