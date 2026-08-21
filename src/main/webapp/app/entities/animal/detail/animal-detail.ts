@@ -22,6 +22,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class AnimalDetail {
   readonly animal = input<IAnimal | null>(null);
 
+  readonly historiquePoids = computed(() => this.peserAnimalService.peserAnimalsResource.value() ?? []);
+
   readonly dernierPoids = computed(() => {
     const list = this.peserAnimalService.peserAnimalsResource.value() ?? [];
     return list.length > 0 ? list[0].poids : null;
@@ -36,7 +38,6 @@ export class AnimalDetail {
         this.peserAnimalService.peserAnimalsParams.set({
           'animalId.equals': currentAnimal.id,
           sort: 'id,desc',
-          size: 1,
         });
       }
     });
