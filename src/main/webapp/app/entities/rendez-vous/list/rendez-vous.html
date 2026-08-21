@@ -83,7 +83,11 @@
         </tr>
       </thead>
       <tbody>
-        @for (rendezVous of rendezVouses(); track trackId(rendezVous)) {
+        @for (group of groupedRendezVouses(); track group.label) {
+        <tr class="table-group-divider">
+          <th colspan="8" class="bg-light text-uppercase small py-2">{{ group.label }}</th>
+        </tr>
+        @for (rendezVous of group.items; track trackId(rendezVous)) {
         <tr data-cy="entityTable">
           <td><a [routerLink]="['/rendez-vous', rendezVous.id, 'view']">{{ rendezVous.id }}</a></td>
           <td>{{ rendezVous.date | formatMediumDatetime }}</td>
@@ -129,7 +133,7 @@
             </div>
           </td>
         </tr>
-        }
+        } }
       </tbody>
     </table>
   </div>

@@ -1,6 +1,8 @@
 package com.stg.petclinic.service;
 
+import com.stg.petclinic.domain.Medecin;
 import com.stg.petclinic.domain.RendezVous;
+import com.stg.petclinic.repository.MedecinRepository;
 import com.stg.petclinic.repository.RendezVousRepository;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,8 +29,11 @@ public class RendezVousService {
 
     private final RendezVousRepository rendezVousRepository;
 
-    public RendezVousService(RendezVousRepository rendezVousRepository) {
+    private final MedecinRepository medecinRepository;
+
+    public RendezVousService(RendezVousRepository rendezVousRepository, MedecinRepository medecinRepository) {
         this.rendezVousRepository = rendezVousRepository;
+        this.medecinRepository = medecinRepository;
     }
 
     /**
@@ -40,6 +45,7 @@ public class RendezVousService {
     public RendezVous save(RendezVous rendezVous) {
         LOG.debug("Request to save RendezVous : {}", rendezVous);
         verifierDateNonPassee(rendezVous.getDate());
+        verifierCoherenceMedecinClinique(rendezVous);
         return rendezVousRepository.save(rendezVous);
     }
 
@@ -52,6 +58,7 @@ public class RendezVousService {
     public RendezVous update(RendezVous rendezVous) {
         LOG.debug("Request to update RendezVous : {}", rendezVous);
         verifierDateNonPassee(rendezVous.getDate());
+        verifierCoherenceMedecinClinique(rendezVous);
         return rendezVousRepository.save(rendezVous);
     }
 
@@ -148,6 +155,33 @@ public class RendezVousService {
     private void verifierDateNonPassee(Instant dateRdv) {
         if (dateRdv != null && dateRdv.isBefore(Instant.now())) {
             throw new RendezVousDatePasseeException();
+        }
+    }
+
+    /**
+     * Vérifie que le médecin du rendez-vous appartient bien à la clinique du rendez-vous.
+     *
+     * Important : on va chercher le médecin EN BASE via son ID, plutôt que de faire
+     * confiance à l'objet "medecin" reçu dans la requête JSON. Le front (ou tout
+     * appelant de l'API) peut légitimement n'envoyer que {"id": X} pour le médecin,
+     * sans sa relation "clinique" imbriquée — dans ce cas rendezVous.getMedecin().getClinique()
+     * est toujours null, et l'ancienne version de cette méthode rejetait alors TOUS les
+     * rendez-vous à tort, même parfaitement cohérents en base.
+     *
+     * @param rendezVous le rendez-vous à vérifier.
+     */
+    private void verifierCoherenceMedecinClinique(RendezVous rendezVous) {
+        if (rendezVous.getMedecin() == null || rendezVous.getMedecin().getId() == null || rendezVous.getClinique() == null) {
+            return;
+        }
+
+        Medecin medecin = medecinRepository.findById(rendezVous.getMedecin().getId()).orElseThrow(MedecinCliniqueIncoherenteException::new);
+
+        Long cliniqueDuMedecinId = medecin.getClinique() != null ? medecin.getClinique().getId() : null;
+        Long cliniqueDuRdvId = rendezVous.getClinique().getId();
+
+        if (cliniqueDuMedecinId == null || !cliniqueDuMedecinId.equals(cliniqueDuRdvId)) {
+            throw new MedecinCliniqueIncoherenteException();
         }
     }
 
