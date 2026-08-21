@@ -11,6 +11,7 @@
   </div>
 
   <!-- Barre de Recherche Globale -->
+  <!-- Barre de Recherche Globale -->
   <div class="search-bar-container bg-white rounded-4 p-3 shadow-sm border mb-4">
     <div class="row g-3 align-items-end">
       <!-- Ligne 1 : Champ de recherche textuelle globale -->
@@ -21,8 +22,10 @@
             type="text"
             class="form-control bg-light border-start-0 ps-0 shadow-none"
             jhiTranslate="home.search.placeholder"
-            placeholder="Rechercher un animal, un client ou un RDV..."
+            placeholder="Rechercher un animal, un médecin ou un motif..."
             aria-label="Rechercher"
+            [ngModel]="searchTerm()"
+            (ngModelChange)="searchTerm.set($event)"
           />
         </div>
       </div>
@@ -30,8 +33,13 @@
       <!-- Ligne 2 : Filtres contextuels -->
       <div class="col-12 col-md-4 col-lg-3">
         <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="home.search.labels.clinique">Clinique</label>
-        <select class="form-select bg-light border-0 shadow-none" aria-label="Filtrer par clinique">
-          <option selected value="" jhiTranslate="home.search.options.allClinics">Toutes les cliniques</option>
+        <select
+          class="form-select bg-light border-0 shadow-none"
+          aria-label="Filtrer par clinique"
+          [ngModel]="cliniqueFilter()"
+          (ngModelChange)="cliniqueFilter.set($event)"
+        >
+          <option value="" jhiTranslate="home.search.options.allClinics">Toutes les cliniques</option>
           <option value="1">Clinique Centrale</option>
           <option value="2">Clinique Nord</option>
         </select>
@@ -39,13 +47,24 @@
 
       <div class="col-12 col-md-4 col-lg-3">
         <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="home.search.labels.date">Date</label>
-        <input type="date" class="form-control bg-light border-0 shadow-none" aria-label="Filtrer par date" />
+        <input
+          type="date"
+          class="form-control bg-light border-0 shadow-none"
+          aria-label="Filtrer par date"
+          [ngModel]="dateFilter()"
+          (ngModelChange)="dateFilter.set($event)"
+        />
       </div>
 
       <div class="col-12 col-md-4 col-lg-2">
         <label class="form-label small fw-semibold text-muted mb-1" jhiTranslate="home.search.labels.dureeMax">Durée max</label>
-        <select class="form-select bg-light border-0 shadow-none" aria-label="Filtrer par durée">
-          <option selected value="" jhiTranslate="home.search.options.allDurations">Toutes les durées</option>
+        <select
+          class="form-select bg-light border-0 shadow-none"
+          aria-label="Filtrer par durée"
+          [ngModel]="dureeMaxFilter()"
+          (ngModelChange)="dureeMaxFilter.set($event)"
+        >
+          <option value="" jhiTranslate="home.search.options.allDurations">Toutes les durées</option>
           <option value="15" jhiTranslate="home.search.options.min15">15 min</option>
           <option value="30" jhiTranslate="home.search.options.min30">30 min</option>
           <option value="60" jhiTranslate="home.search.options.min60">1 heure ou plus</option>
@@ -54,16 +73,17 @@
 
       <!-- Ligne 2 : Boutons d'action -->
       <div class="col-12 col-lg-4 d-flex gap-2">
-        <button type="button" class="btn btn-outline-secondary w-50 py-2 d-flex align-items-center justify-content-center gap-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2"
+          (click)="resetFilters()"
+        >
           <i class="fa-solid fa-rotate-left"></i>
           <span jhiTranslate="home.search.reset">Réinitialiser</span>
         </button>
-
-        <button type="button" class="btn btn-primary w-50 fw-semibold py-2" jhiTranslate="home.search.filterButton">Filtrer</button>
       </div>
     </div>
   </div>
-
   <!-- Cartes KPI -->
   <div class="row g-4 mb-4">
     <div class="col-12 col-sm-6 col-xl-3">
@@ -96,95 +116,75 @@
       </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm rounded-4 h-100 hover-card">
-        <div class="card-body d-flex align-items-center p-3">
-          <div>
-            <div class="text-muted small fw-semibold" jhiTranslate="home.kpi.activeClients">CLIENTS ACTIFS</div>
-            <div class="h3 fw-bold mb-0 text-dark">94</div>
-          </div>
+    <!-- Planning des Rendez-vous -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+      <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="fw-bold mb-0 text-dark" jhiTranslate="home.planning.title">Planning des Rendez-vous</h5>
+          <small class="text-muted"> {{ afficherTout() ? 'Tous les rendez-vous' : "Consultation d'aujourd'hui" }} </small>
         </div>
-      </div>
-    </div>
 
-    <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm rounded-4 h-100 hover-card">
-        <div class="card-body d-flex align-items-center p-3">
-          <div>
-            <div class="text-muted small fw-semibold" jhiTranslate="home.kpi.clinics">CLINIQUES</div>
-            <div class="h3 fw-bold mb-0 text-dark">3</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Planning des Rendez-vous -->
-  <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-    <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-      <div>
-        <h5 class="fw-bold mb-0 text-dark" jhiTranslate="home.planning.title">Planning des Rendez-vous</h5>
-        <small class="text-muted"> {{ afficherTout() ? 'Tous les rendez-vous' : "Consultation d'aujourd'hui" }} </small>
+        <!-- Le bouton s'adapte au mode actif -->
+        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="getAllRendezVous()">
+          {{ afficherTout() ? "Voir aujourd'hui uniquement" : "Voir tout le planning" }}
+        </button>
       </div>
 
-      <!-- Le bouton s'adapte au mode actif -->
-      <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="getAllRendezVous()">
-        {{ afficherTout() ? "Voir aujourd'hui uniquement" : "Voir tout le planning" }}
-      </button>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table align-middle mb-0 table-hover">
-        <thead class="bg-light text-muted small text-uppercase">
-          <tr>
-            <th class="ps-4" jhiTranslate="home.table.dateTime">Date & Heure</th>
-            <th jhiTranslate="home.table.duration">Durée</th>
-            <th jhiTranslate="home.table.clinic">Clinique</th>
-            <th jhiTranslate="home.table.animal">Animal</th>
-            <th jhiTranslate="home.table.vet">Médecin Référent</th>
-            <th jhiTranslate="home.table.reason">Motif</th>
-            <th class="text-end pe-4" jhiTranslate="home.table.actions">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (isLoadingRendezVous()) {
-          <tr>
-            <td colspan="7" class="text-center py-4"><span class="spinner-border spinner-border-sm text-primary"></span> Chargement...</td>
-          </tr>
-          } @else { @for (rv of listeRendezVous(); track rv.id) {
-          <tr>
-            <td class="ps-4 fw-bold text-primary">{{ rv.date }}</td>
-            <td>
-              <span class="badge bg-light text-dark border"> {{ rv.duree }} <span jhiTranslate="home.table.mins">mins</span> </span>
-            </td>
-            <td><span class="fw-semibold text-dark">{{ rv.clinique?.nom || '-' }}</span></td>
-            <td>
-              <div class="d-flex align-items-center">
-                <div>
-                  <div class="fw-bold text-dark">{{ rv.animal?.nom || '-' }}</div>
-                  <div class="text-muted small">{{ rv.animal?.espece || '-' }}</div>
+      <div class="table-responsive">
+        <table class="table align-middle mb-0 table-hover">
+          <thead class="bg-light text-muted small text-uppercase">
+            <tr>
+              <th class="ps-4" jhiTranslate="home.table.dateTime">Date & Heure</th>
+              <th jhiTranslate="home.table.duration">Durée</th>
+              <th jhiTranslate="home.table.clinic">Clinique</th>
+              <th jhiTranslate="home.table.animal">Animal</th>
+              <th jhiTranslate="home.table.vet">Médecin Référent</th>
+              <th jhiTranslate="home.table.reason">Motif</th>
+              <th class="text-end pe-4" jhiTranslate="home.table.actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isLoadingRendezVous()) {
+            <tr>
+              <td colspan="7" class="text-center py-4">
+                <span class="spinner-border spinner-border-sm text-primary"></span> Chargement...
+              </td>
+            </tr>
+            } @else { @for (rv of filteredListeRendezVous(); track rv.id) {
+            <tr>
+              <td class="ps-4 fw-bold text-primary">{{ rv.date }}</td>
+              <td>
+                <span class="badge bg-light text-dark border"> {{ rv.duree }} <span jhiTranslate="home.table.mins">mins</span> </span>
+              </td>
+              <td><span class="fw-semibold text-dark">{{ rv.clinique?.nom || '-' }}</span></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div>
+                    <div class="fw-bold text-dark">{{ rv.animal?.nom || '-' }}</div>
+                    <div class="text-muted small">{{ rv.animal?.espece || '-' }}</div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td>
-              @if (rv.medecin; as medecin) {
-              <span>Dr. {{ medecin.nom }}</span>
-              } @else {
-              <span class="text-muted">-</span>
-              }
-            </td>
-            <td>{{ rv.motif || '-' }}</td>
-            <td class="text-end pe-4">
-              <button class="btn btn-sm btn-light rounded-circle" title="Voir détails" (click)="viewDetail(rv.id)">👁️</button>
-            </td>
-          </tr>
-          } @empty {
-          <tr>
-            <td colspan="7" class="text-center text-muted py-4">Aucun rendez-vous trouvé.</td>
-          </tr>
-          } }
-        </tbody>
-      </table>
+              </td>
+              <td>
+                @if (rv.medecin; as medecin) {
+                <span>Dr. {{ medecin.nom }}</span>
+                } @else {
+                <span class="text-muted">-</span>
+                }
+              </td>
+              <td>{{ rv.motif || '-' }}</td>
+              <td class="text-end pe-4">
+                <button class="btn btn-sm btn-light rounded-circle" title="Voir détails" (click)="viewDetail(rv.id)">👁️</button>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">Aucun rendez-vous trouvé.</td>
+            </tr>
+            } }
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

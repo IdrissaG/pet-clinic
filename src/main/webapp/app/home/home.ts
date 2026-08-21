@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { AccountService } from 'app/core/auth/account.service';
@@ -13,7 +14,7 @@ import { TranslateDirective } from 'app/shared/language';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home.html',
   styleUrl: './home.scss',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
 })
 export default class Home implements OnInit {
   today: number = Date.now();
@@ -26,6 +27,58 @@ export default class Home implements OnInit {
   totalRendezVous = signal<number | null>(null);
   isLoadingRendezVous = signal<boolean>(true);
   listeRendezVous = signal<IRendezVous[]>([]);
+
+  // Signals pour les filtres de la page d'accueil
+  readonly searchTerm = signal<string>('');
+  readonly cliniqueFilter = signal<string>('');
+  readonly dateFilter = signal<string>('');
+  readonly dureeMaxFilter = signal<string>('');
+
+  // Signal dérivé : Filtrage réactif de la liste des RDV
+  readonly filteredListeRendezVous = computed(() => {
+    const search = this.searchTerm().toLowerCase().trim();
+    const clinique = this.cliniqueFilter().toLowerCase().trim();
+    const date = this.dateFilter();
+    const dureeMax = this.dureeMaxFilter() ? Number(this.dureeMaxFilter()) : null;
+
+    return this.listeRendezVous().filter(rv => {
+      // 1. Recherche globale (Animal, Médecin, Motif)
+      const matchesSearch =
+        !search ||
+        (rv.animal?.nom?.toLowerCase().includes(search) ?? false) ||
+        (rv.medecin?.nom?.toLowerCase().includes(search) ?? false) ||
+        (rv.motif?.toLowerCase().includes(search) ?? false);
+
+      // 2. Filtre par Clinique (par nom ou ID)
+      const matchesClinique =
+        !clinique || (rv.clinique?.nom?.toLowerCase().includes(clinique) ?? false) || rv.clinique?.id?.toString() === clinique;
+
+      // 3. Filtre par Date
+      let rdvDateStr = '';
+      const rawDate: any = (rv as any).date ?? (rv as any).dateHeure;
+      if (rawDate) {
+        if (typeof rawDate.format === 'function') {
+          rdvDateStr = rawDate.format('YYYY-MM-DD');
+        } else if (typeof rawDate === 'string') {
+          rdvDateStr = rawDate.slice(0, 10);
+        }
+      }
+      const matchesDate = !date || rdvDateStr === date;
+
+      // 4. Filtre par Durée maximale
+      const matchesDuree = !dureeMax || (rv.duree ?? 0) <= dureeMax;
+
+      return matchesSearch && matchesClinique && matchesDate && matchesDuree;
+    });
+  });
+
+  // Méthodes pour réinitialiser les filtres
+  resetFilters(): void {
+    this.searchTerm.set('');
+    this.cliniqueFilter.set('');
+    this.dateFilter.set('');
+    this.dureeMaxFilter.set('');
+  }
   // Mode d'affichage actif : true = Tous les RDV, false = RDV du jour
   afficherTout = signal<boolean>(false);
 

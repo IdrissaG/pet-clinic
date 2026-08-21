@@ -154,4 +154,16 @@ export class Animal implements OnInit {
       queryParams: queryParamsObj,
     });
   }
+
+  // Méthode pour appliquer le filtre et recharger
+  applyFilters(): void {
+    this.page.set(1);
+    this.handleNavigation(this.page(), this.sortState());
+  }
+
+  // Méthode pour réinitialiser le filtre
+  resetFilters(): void {
+    this.especeFilter.set(null);
+    this.applyFilters();
+  }
 }
