@@ -37,7 +37,7 @@ public class Clinique implements Serializable {
     private String adresse;
 
     @NotNull
-    @Pattern(regexp = "^\+221[0-9]{9}$", message = "Le telephone doit etre au format senegalais : +221 suivi de 9 chiffres")
+    @Pattern(regexp = "^\\+221[0-9]{9}$", message = "Le telephone doit etre au format senegalais : +221 suivi de 9 chiffres")
     @Column(name = "telephone", nullable = false)
     private String telephone;
 
