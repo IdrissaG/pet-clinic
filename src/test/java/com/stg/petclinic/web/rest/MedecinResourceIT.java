@@ -9,10 +9,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stg.petclinic.IntegrationTest;
+import com.stg.petclinic.domain.Animal;
+import com.stg.petclinic.domain.Client;
 import com.stg.petclinic.domain.Clinique;
 import com.stg.petclinic.domain.Medecin;
+import com.stg.petclinic.domain.RendezVous;
+import com.stg.petclinic.domain.enumeration.Espece;
+import com.stg.petclinic.domain.enumeration.Sexe;
 import com.stg.petclinic.repository.MedecinRepository;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -240,6 +248,22 @@ class MedecinResourceIT {
 
     @Test
     @Transactional
+    void checkEmailIsInvalid() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set an email that does not match the expected pattern
+        medecin.setEmail("not-an-email");
+
+        // Create the Medecin, which fails.
+
+        restMedecinMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(medecin)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllMedecins() throws Exception {
         // Initialize the database
         insertedMedecin = medecinRepository.saveAndFlush(medecin);
@@ -255,6 +279,112 @@ class MedecinResourceIT {
             .andExpect(jsonPath("$.[*].specialite").value(hasItem(DEFAULT_SPECIALITE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].telephone").value(hasItem(DEFAULT_TELEPHONE)));
+    }
+
+    @Test
+    @Transactional
+    void getAllMedecinsByCliniqueIdFilter() throws Exception {
+        // Initialize the database with a medecin attached to its own clinique
+        insertedMedecin = medecinRepository.saveAndFlush(medecin);
+
+        // Create a second medecin attached to a different clinique
+        Clinique otherClinique = CliniqueResourceIT.createUpdatedEntity();
+        em.persist(otherClinique);
+        em.flush();
+        Medecin otherMedecin = new Medecin()
+            .nom(UPDATED_NOM)
+            .prenom(UPDATED_PRENOM)
+            .specialite(UPDATED_SPECIALITE)
+            .email(UPDATED_EMAIL)
+            .telephone(UPDATED_TELEPHONE)
+            .clinique(otherClinique);
+        medecinRepository.saveAndFlush(otherMedecin);
+
+        // Filter by the first medecin's clinique: only it should be returned
+        restMedecinMockMvc
+            .perform(get(ENTITY_API_URL + "?cliniqueId=" + medecin.getClinique().getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(medecin.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(org.hamcrest.Matchers.not(hasItem(otherMedecin.getId().intValue()))));
+
+        medecinRepository.delete(otherMedecin);
+    }
+
+    @Test
+    @Transactional
+    void getAllMedecinsBySpecialiteFilter() throws Exception {
+        // Initialize the database
+        insertedMedecin = medecinRepository.saveAndFlush(medecin);
+
+        // Filter with a partial, differently-cased match: should still find it
+        String partialLowerCase = DEFAULT_SPECIALITE.substring(0, 4).toLowerCase();
+        restMedecinMockMvc
+            .perform(get(ENTITY_API_URL + "?specialite=" + partialLowerCase))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(medecin.getId().intValue())));
+
+        // Filter with a specialite that does not match: should not find it
+        restMedecinMockMvc
+            .perform(get(ENTITY_API_URL + "?specialite=zzz-inexistant"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(org.hamcrest.Matchers.not(hasItem(medecin.getId().intValue()))));
+    }
+
+    @Test
+    @Transactional
+    void getAllMedecinsByCliniqueIdAndSpecialiteCombinedFilter() throws Exception {
+        // medecinA matches both filters
+        Medecin medecinA = (insertedMedecin = medecinRepository.saveAndFlush(medecin));
+
+        // medecinB matches the specialite filter but belongs to a different clinique
+        Clinique otherClinique = CliniqueResourceIT.createUpdatedEntity();
+        em.persist(otherClinique);
+        em.flush();
+        Medecin medecinB = new Medecin()
+            .nom(UPDATED_NOM)
+            .prenom(UPDATED_PRENOM)
+            .specialite(DEFAULT_SPECIALITE)
+            .email(UPDATED_EMAIL)
+            .telephone(UPDATED_TELEPHONE)
+            .clinique(otherClinique);
+        medecinRepository.saveAndFlush(medecinB);
+
+        // medecinC belongs to the same clinique but has a different specialite
+        Medecin medecinC = new Medecin()
+            .nom(UPDATED_NOM)
+            .prenom(UPDATED_PRENOM)
+            .specialite(UPDATED_SPECIALITE)
+            .email("other." + UPDATED_EMAIL)
+            .telephone(UPDATED_TELEPHONE)
+            .clinique(medecinA.getClinique());
+        medecinRepository.saveAndFlush(medecinC);
+
+        String partialLowerCase = DEFAULT_SPECIALITE.substring(0, 4).toLowerCase();
+        restMedecinMockMvc
+            .perform(get(ENTITY_API_URL + "?cliniqueId=" + medecinA.getClinique().getId() + "&specialite=" + partialLowerCase))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(medecinA.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(org.hamcrest.Matchers.not(hasItem(medecinB.getId().intValue()))))
+            .andExpect(jsonPath("$.[*].id").value(org.hamcrest.Matchers.not(hasItem(medecinC.getId().intValue()))));
+
+        medecinRepository.delete(medecinB);
+        medecinRepository.delete(medecinC);
+    }
+
+    @Test
+    @Transactional
+    void getAllMedecinsByNonExistentCliniqueIdFilter() throws Exception {
+        insertedMedecin = medecinRepository.saveAndFlush(medecin);
+
+        restMedecinMockMvc
+            .perform(get(ENTITY_API_URL + "?cliniqueId=999999999"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(org.hamcrest.Matchers.not(hasItem(medecin.getId().intValue()))));
     }
 
     @Test
@@ -491,6 +621,53 @@ class MedecinResourceIT {
 
         // Validate the database contains one less item
         assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    @Test
+    @Transactional
+    void deleteMedecinWithRendezVousShouldFail() throws Exception {
+        // Initialize the database
+        insertedMedecin = medecinRepository.saveAndFlush(medecin);
+
+        // Attach a rendez-vous to this medecin
+        // NB: built manually rather than via ClientResourceIT/AnimalResourceIT.createEntity() because the
+        // default test telephone no longer matches Client's validation pattern (unrelated regression from G3).
+        Client client = new Client()
+            .nom("Test")
+            .prenom("Client")
+            .adresse("1 rue du Test")
+            .telephone("781234567")
+            .email("test.client@petclinic.fr");
+        em.persist(client);
+        Animal animal = new Animal()
+            .nom("Rex")
+            .espece(Espece.CHIEN)
+            .dateNaissance(LocalDate.now().minusYears(2))
+            .sexe(Sexe.MALE)
+            .client(client);
+        em.persist(animal);
+        RendezVous rendezVous = new RendezVous()
+            .date(Instant.now().plus(1, ChronoUnit.DAYS))
+            .motif("Consultation")
+            .duree(30.0)
+            .animal(animal)
+            .clinique(medecin.getClinique())
+            .medecin(medecin);
+        em.persist(rendezVous);
+        em.flush();
+
+        long databaseSizeBeforeDelete = getRepositoryCount();
+
+        // Attempt to delete the medecin: must fail with a clear error, not a raw 500
+        restMedecinMockMvc
+            .perform(delete(ENTITY_API_URL_ID, medecin.getId()).accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("error.medecinAvecRendezVous"));
+
+        // Validate the medecin was not deleted
+        assertSameRepositoryCount(databaseSizeBeforeDelete);
+
+        em.remove(rendezVous);
     }
 
     protected long getRepositoryCount() {

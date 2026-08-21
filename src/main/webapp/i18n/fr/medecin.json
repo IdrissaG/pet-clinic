@@ -24,7 +24,10 @@
       "email": "Email",
       "telephone": "Telephone",
       "rendezVous": "Rendez Vous",
-      "clinique": "Clinique"
+      "clinique": "Clinique",
+      "filter": {
+        "allCliniques": "Toutes les cliniques"
+      }
     }
   }
 }

@@ -2,11 +2,18 @@
   "petclinicApp": {
     "rendezVous": {
       "home": {
-        "title": "RendezVouses",
+        "title": "RendezVous",
         "refreshListLabel": "Actualiser la liste",
         "createLabel": "Créer un nouveau Rendez Vous",
         "createOrEditLabel": "Créer ou éditer un Rendez Vous",
         "notFound": "Aucun Rendez Vous trouvé"
+      },
+      "search": {
+        "label": "Rechercher",
+        "placeholder": "Client, animal, motif...",
+        "date": "Date",
+        "statut": "Statut",
+        "allStatuts": "Tous les statuts"
       },
       "created": "Un nouveau Rendez Vous a été créé avec l'identifiant {{ param }}",
       "updated": "Le Rendez Vous avec l'identifiant {{ param }} a été mis à jour",

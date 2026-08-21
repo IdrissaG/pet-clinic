@@ -133,4 +133,12 @@ export class RendezVousService extends RendezVousesService {
   protected convertResponseArrayFromServer(res: RestRendezVous[]): IRendezVous[] {
     return res.map(item => this.convertValueFromServer(item));
   }
+
+  rendezVousToday(): Observable<IRendezVous[]> {
+    return this.http.get<IRendezVous[]>(`${this.resourceUrl}/today`);
+  }
+
+  getAllRendezVous(): Observable<IRendezVous[]> {
+    return this.http.get<any>(this.resourceUrl).pipe(map(res => res.content || res));
+  }
 }

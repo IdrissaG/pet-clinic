@@ -26,8 +26,11 @@ export class MedecinDeleteDialog {
   }
 
   confirmDelete(id: number): void {
-    this.medecinService.delete(id).subscribe(() => {
-      this.activeModal.close(ITEM_DELETED_EVENT);
+    this.medecinService.delete(id).subscribe({
+      next: () => this.activeModal.close(ITEM_DELETED_EVENT),
+      // Error is already surfaced globally via the HTTP error interceptor (jhi-alert-error);
+      // this empty handler only prevents an unhandled RxJS exception, the modal stays open.
+      error: () => {},
     });
   }
 }

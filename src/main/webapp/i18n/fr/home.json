@@ -1,19 +1,49 @@
 {
   "home": {
-    "title": "Bienvenue, Java Hipster !",
-    "subtitle": "Ceci est votre page d'accueil",
-    "logged": {
-      "message": "Vous êtes connecté en tant que \"{{username}}\"."
+    "title": "Tableau de Bord Vétérinaire",
+    "subtitle": "Bienvenue sur PetClinic — Aperçu de l'activité",
+    "search": {
+      "placeholder": "Rechercher un animal, un client ou un RDV...",
+      "filterButton": "Filtrer",
+      "reset": "Réinitialiser",
+      "labels": {
+        "clinique": "Clinique",
+        "date": "Date",
+        "dureeMax": "Durée max"
+      },
+      "options": {
+        "allClinics": "Toutes les cliniques",
+        "allDurations": "Toutes les durées",
+        "today": "Aujourd'hui",
+        "week": "Cette semaine",
+        "month": "Ce mois",
+        "min15": "15 min",
+        "min30": "30 min",
+        "min60": "1 heure ou plus"
+      }
     },
-    "question": "Si vous avez des questions à propos de JHipster :",
-    "link": {
-      "homepage": "Page d'accueil de JHipster",
-      "stackoverflow": "JHipster sur Stack Overflow",
-      "bugtracker": "JHipster bug tracker",
-      "chat": "JHipster public chat room",
-      "follow": "Suivez @jhipster sur Twitter"
+    "kpi": {
+      "totalAnimals": "ANIMAUX ENREGISTRÉS",
+      "todayAppointments": "RDV AUJOURD'HUI",
+      "activeClients": "CLIENTS ACTIFS",
+      "clinics": "CLINIQUES"
     },
-    "like": "Si vous aimez JHipster, donnez-nous une étoile sur",
-    "github": "GitHub"
+    "planning": {
+      "title": "Planning des Rendez-vous",
+      "subtitle": "Prochaines consultations prévues",
+      "viewAll": "Voir tout le planning"
+    },
+    "table": {
+      "dateTime": "Date & Heure",
+      "duration": "Durée",
+      "clinic": "Clinique",
+      "animal": "Animal",
+      "owner": "Propriétaire",
+      "vet": "Médecin Référent",
+      "reason": "Motif",
+      "actions": "Actions",
+      "mins": "mins",
+      "viewDetails": "Voir détails"
+    }
   }
 }

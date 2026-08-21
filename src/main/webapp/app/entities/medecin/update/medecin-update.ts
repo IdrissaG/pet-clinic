@@ -93,7 +93,7 @@ export class MedecinUpdate implements OnInit {
 
   protected loadRelationshipsOptions(): void {
     this.cliniqueService
-      .query()
+      .query({ size: 9999 })
       .pipe(map((res: HttpResponse<IClinique[]>) => res.body ?? []))
       .pipe(
         map((cliniques: IClinique[]) =>

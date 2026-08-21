@@ -44,6 +44,7 @@ class AnimalResourceIT {
 
     private static final LocalDate DEFAULT_DATE_NAISSANCE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_NAISSANCE = LocalDate.parse("2026-08-17");
+    private static final LocalDate SMALLER_DATE_NAISSANCE = LocalDate.ofEpochDay(-1L);
 
     private static final Sexe DEFAULT_SEXE = Sexe.MALE;
     private static final Sexe UPDATED_SEXE = Sexe.FEMELLE;
@@ -250,6 +251,281 @@ class AnimalResourceIT {
             .andExpect(jsonPath("$.espece").value(DEFAULT_ESPECE.toString()))
             .andExpect(jsonPath("$.dateNaissance").value(DEFAULT_DATE_NAISSANCE.toString()))
             .andExpect(jsonPath("$.sexe").value(DEFAULT_SEXE.toString()));
+    }
+
+    @Test
+    @Transactional
+    void getAnimalsByIdFiltering() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        Long id = animal.getId();
+
+        defaultAnimalFiltering("id.equals=" + id, "id.notEquals=" + id);
+
+        defaultAnimalFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
+
+        defaultAnimalFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByNomIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where nom equals to
+        defaultAnimalFiltering("nom.equals=" + DEFAULT_NOM, "nom.equals=" + UPDATED_NOM);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByNomIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where nom in
+        defaultAnimalFiltering("nom.in=" + DEFAULT_NOM + "," + UPDATED_NOM, "nom.in=" + UPDATED_NOM);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByNomIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where nom is not null
+        defaultAnimalFiltering("nom.specified=true", "nom.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByNomContainsSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where nom contains
+        defaultAnimalFiltering("nom.contains=" + DEFAULT_NOM, "nom.contains=" + UPDATED_NOM);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByNomNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where nom does not contain
+        defaultAnimalFiltering("nom.doesNotContain=" + UPDATED_NOM, "nom.doesNotContain=" + DEFAULT_NOM);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByEspeceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where espece equals to
+        defaultAnimalFiltering("espece.equals=" + DEFAULT_ESPECE, "espece.equals=" + UPDATED_ESPECE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByEspeceIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where espece in
+        defaultAnimalFiltering("espece.in=" + DEFAULT_ESPECE + "," + UPDATED_ESPECE, "espece.in=" + UPDATED_ESPECE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByEspeceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where espece is not null
+        defaultAnimalFiltering("espece.specified=true", "espece.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance equals to
+        defaultAnimalFiltering("dateNaissance.equals=" + DEFAULT_DATE_NAISSANCE, "dateNaissance.equals=" + UPDATED_DATE_NAISSANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance in
+        defaultAnimalFiltering(
+            "dateNaissance.in=" + DEFAULT_DATE_NAISSANCE + "," + UPDATED_DATE_NAISSANCE,
+            "dateNaissance.in=" + UPDATED_DATE_NAISSANCE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance is not null
+        defaultAnimalFiltering("dateNaissance.specified=true", "dateNaissance.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance is greater than or equal to
+        defaultAnimalFiltering(
+            "dateNaissance.greaterThanOrEqual=" + DEFAULT_DATE_NAISSANCE,
+            "dateNaissance.greaterThanOrEqual=" + UPDATED_DATE_NAISSANCE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance is less than or equal to
+        defaultAnimalFiltering(
+            "dateNaissance.lessThanOrEqual=" + DEFAULT_DATE_NAISSANCE,
+            "dateNaissance.lessThanOrEqual=" + SMALLER_DATE_NAISSANCE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance is less than
+        defaultAnimalFiltering("dateNaissance.lessThan=" + UPDATED_DATE_NAISSANCE, "dateNaissance.lessThan=" + DEFAULT_DATE_NAISSANCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByDateNaissanceIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where dateNaissance is greater than
+        defaultAnimalFiltering(
+            "dateNaissance.greaterThan=" + SMALLER_DATE_NAISSANCE,
+            "dateNaissance.greaterThan=" + DEFAULT_DATE_NAISSANCE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsBySexeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where sexe equals to
+        defaultAnimalFiltering("sexe.equals=" + DEFAULT_SEXE, "sexe.equals=" + UPDATED_SEXE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsBySexeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where sexe in
+        defaultAnimalFiltering("sexe.in=" + DEFAULT_SEXE + "," + UPDATED_SEXE, "sexe.in=" + UPDATED_SEXE);
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsBySexeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAnimal = animalRepository.saveAndFlush(animal);
+
+        // Get all the animalList where sexe is not null
+        defaultAnimalFiltering("sexe.specified=true", "sexe.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAnimalsByClientIsEqualToSomething() throws Exception {
+        Client client;
+        if (TestUtil.findAll(em, Client.class).isEmpty()) {
+            animalRepository.saveAndFlush(animal);
+            client = ClientResourceIT.createEntity();
+        } else {
+            client = TestUtil.findAll(em, Client.class).get(0);
+        }
+        em.persist(client);
+        em.flush();
+        animal.setClient(client);
+        animalRepository.saveAndFlush(animal);
+        Long clientId = client.getId();
+        // Get all the animalList where client equals to clientId
+        defaultAnimalShouldBeFound("clientId.equals=" + clientId);
+
+        // Get all the animalList where client equals to (clientId + 1)
+        defaultAnimalShouldNotBeFound("clientId.equals=" + (clientId + 1));
+    }
+
+    private void defaultAnimalFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
+        defaultAnimalShouldBeFound(shouldBeFound);
+        defaultAnimalShouldNotBeFound(shouldNotBeFound);
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultAnimalShouldBeFound(String filter) throws Exception {
+        restAnimalMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(animal.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nom").value(hasItem(DEFAULT_NOM)))
+            .andExpect(jsonPath("$.[*].espece").value(hasItem(DEFAULT_ESPECE.toString())))
+            .andExpect(jsonPath("$.[*].dateNaissance").value(hasItem(DEFAULT_DATE_NAISSANCE.toString())))
+            .andExpect(jsonPath("$.[*].sexe").value(hasItem(DEFAULT_SEXE.toString())));
+
+        // Check, that the count call also returns 1
+        restAnimalMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultAnimalShouldNotBeFound(String filter) throws Exception {
+        restAnimalMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAnimalMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

@@ -8,11 +8,17 @@
         "createOrEditLabel": "Créer ou éditer un Animal",
         "notFound": "Aucun Animal trouvé"
       },
+      "search": {
+        "label": "Rechercher",
+        "placeholder": "Nom, numéro d'identification, propriétaire...",
+        "espece": "Espèce",
+        "allEspeces": "Toutes les espèces"
+      },
       "created": "Un nouveau Animal a été créé avec l'identifiant {{ param }}",
-      "updated": "Le Animal avec l'identifiant {{ param }} a été mis à jour",
-      "deleted": "Le Animal avec l'identifiant {{ param }} a été supprimé",
+      "updated": "L'Animal avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "L'Animal avec l'identifiant {{ param }} a été supprimé",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer le Animal {{ id }} ?"
+        "question": "Êtes-vous certain de vouloir supprimer l'Animal {{ id }} ?"
       },
       "detail": {
         "title": "Animal"
@@ -22,6 +28,10 @@
       "espece": "Espece",
       "dateNaissance": "Date Naissance",
       "sexe": "Sexe",
+      "dernierPoids": "Dernier poids",
+      "allEspeces": "Toutes espèces",
+      "clientPrenom": "Prénom du client",
+      "clientNom": "Nom du client",
       "client": "Client"
     }
   }

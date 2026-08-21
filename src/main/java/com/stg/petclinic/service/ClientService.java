@@ -77,9 +77,13 @@ public class ClientService {
      * @param pageable the pagination information.
      * @return the list of entities.
      */
+    // Adaptation de FindAll pour accepter le paramètre optionnel query
     @Transactional(readOnly = true)
-    public Page<Client> findAll(Pageable pageable) {
-        LOG.debug("Request to get all Clients");
+    public Page<Client> findAll(String query, Pageable pageable) {
+        LOG.debug("Request to get Clients with query : {}", query);
+        if (query != null && !query.trim().isEmpty()) {
+            return clientRepository.searchByName(query.trim(), pageable);
+        }
         return clientRepository.findAll(pageable);
     }
 

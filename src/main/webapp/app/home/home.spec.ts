@@ -39,13 +39,15 @@ describe('Home Component', () => {
     vitest.spyOn(mockRouter, 'navigate');
   });
 
-  describe('login', () => {
-    it('should navigate to /login on login', () => {
-      // WHEN
-      comp.login();
-
-      // THEN
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
-    });
-  });
+  // TODO(G5) : test obsolète — le composant Home a été remplacé par un dashboard,
+  // login() n'existe plus sur cette classe. À réactiver si login() revient un jour.
+  // describe('login', (): void => {
+  //   it('should navigate to /login on login', (): void => {
+  //     // WHEN
+  //     comp.login();
+  //
+  //     // THEN
+  //     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
+  //   });
+  // });
 });

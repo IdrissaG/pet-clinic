@@ -92,5 +92,33 @@ describe('Medecin Form Service', () => {
         expect(formGroup.controls.id.disabled).toBe(true);
       });
     });
+
+    describe('email validation', () => {
+      it('should be invalid when email is empty', () => {
+        const formGroup = service.createMedecinFormGroup();
+
+        formGroup.controls.email.setValue('');
+
+        expect(formGroup.controls.email.valid).toBe(false);
+        expect(formGroup.controls.email.errors?.required).toBeTruthy();
+      });
+
+      it('should be invalid when email does not match the expected format', () => {
+        const formGroup = service.createMedecinFormGroup();
+
+        formGroup.controls.email.setValue('not-an-email');
+
+        expect(formGroup.controls.email.valid).toBe(false);
+        expect(formGroup.controls.email.errors?.pattern).toBeTruthy();
+      });
+
+      it('should be valid with a correctly formatted email', () => {
+        const formGroup = service.createMedecinFormGroup();
+
+        formGroup.controls.email.setValue('medecin@petclinic.fr');
+
+        expect(formGroup.controls.email.valid).toBe(true);
+      });
+    });
   });
 });

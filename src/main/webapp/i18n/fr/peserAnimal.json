@@ -4,18 +4,18 @@
       "home": {
         "title": "PeserAnimals",
         "refreshListLabel": "Actualiser la liste",
-        "createLabel": "Créer un nouveau Peser Animal",
-        "createOrEditLabel": "Créer ou éditer un Peser Animal",
-        "notFound": "Aucun Peser Animal trouvé"
+        "createLabel": "Créer un nouveau Pesage d'Animal",
+        "createOrEditLabel": "Créer ou éditer un Pesage d'Animal",
+        "notFound": "Aucun Pesage d'Animal trouvé"
       },
-      "created": "Un nouveau Peser Animal a été créé avec l'identifiant {{ param }}",
-      "updated": "Le Peser Animal avec l'identifiant {{ param }} a été mis à jour",
-      "deleted": "Le Peser Animal avec l'identifiant {{ param }} a été supprimé",
+      "created": "Un nouveau Pesage d'Animal a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Pesage d'Animal avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Pesage d'Animal avec l'identifiant {{ param }} a été supprimé",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer le Peser Animal {{ id }} ?"
+        "question": "Êtes-vous certain de vouloir supprimer le Pesage d'Animal {{ id }} ?"
       },
       "detail": {
-        "title": "Peser Animal"
+        "title": "Pesage d'Animal"
       },
       "id": "ID",
       "poids": "Poids",

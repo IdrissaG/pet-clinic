@@ -1,6 +1,7 @@
 package com.stg.petclinic.web.rest;
 
 import com.stg.petclinic.domain.Client;
+import com.stg.petclinic.repository.AnimalRepository;
 import com.stg.petclinic.repository.ClientRepository;
 import com.stg.petclinic.service.ClientService;
 import com.stg.petclinic.web.rest.errors.BadRequestAlertException;
@@ -8,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -39,21 +42,15 @@ public class ClientResource {
     private String applicationName;
 
     private final ClientService clientService;
-
     private final ClientRepository clientRepository;
+    private final AnimalRepository animalRepository;
 
-    public ClientResource(ClientService clientService, ClientRepository clientRepository) {
+    public ClientResource(ClientService clientService, ClientRepository clientRepository, AnimalRepository animalRepository) {
         this.clientService = clientService;
         this.clientRepository = clientRepository;
+        this.animalRepository = animalRepository;
     }
 
-    /**
-     * {@code POST  /clients} : Create a new client.
-     *
-     * @param client the client to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new client, or with status {@code 400 (Bad Request)} if the client has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
     public ResponseEntity<Client> createClient(@Valid @RequestBody Client client) throws URISyntaxException {
         LOG.debug("REST request to save Client : {}", client);
@@ -66,16 +63,6 @@ public class ClientResource {
             .body(client);
     }
 
-    /**
-     * {@code PUT  /clients/:id} : Updates an existing client.
-     *
-     * @param id the id of the client to save.
-     * @param client the client to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated client,
-     * or with status {@code 400 (Bad Request)} if the client is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the client couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
     public ResponseEntity<Client> updateClient(
         @PathVariable(value = "id", required = false) final Long id,
@@ -99,17 +86,6 @@ public class ClientResource {
             .body(client);
     }
 
-    /**
-     * {@code PATCH  /clients/:id} : Partial updates given fields of an existing client, field will ignore if it is null
-     *
-     * @param id the id of the client to save.
-     * @param client the client to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated client,
-     * or with status {@code 400 (Bad Request)} if the client is not valid,
-     * or with status {@code 404 (Not Found)} if the client is not found,
-     * or with status {@code 500 (Internal Server Error)} if the client couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Client> partialUpdateClient(
         @PathVariable(value = "id", required = false) final Long id,
@@ -135,40 +111,34 @@ public class ClientResource {
         );
     }
 
-    /**
-     * {@code GET  /clients} : get all the Clients.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Clients in body.
-     */
     @GetMapping("")
-    public ResponseEntity<List<Client>> getAllClients(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Clients");
-        Page<Client> page = clientService.findAll(pageable);
+    public ResponseEntity<List<Client>> getAllClients(
+        @RequestParam(name = "query", required = false) String query,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get a page of Clients with query: {}", query);
+        Page<Client> page = clientService.findAll(query, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * {@code GET  /clients/:id} : get the "id" client.
-     *
-     * @param id the id of the client to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the client, or with status {@code 404 (Not Found)}.
+     * {@code GET  /clients/:id} : get the "id" client with his animals.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getClient(@PathVariable("id") Long id) {
+    @Transactional(readOnly = true)
+    public ResponseEntity<Client> getClient(@PathVariable Long id) {
         LOG.debug("REST request to get Client : {}", id);
-        Optional<Client> client = clientService.findOne(id);
+
+        Optional<Client> client = clientRepository.findById(id);
+
+        client.ifPresent(c -> c.setAnimals(new HashSet<>(animalRepository.findByClientId(id))));
+
         return ResponseUtil.wrapOrNotFound(client);
     }
 
-    /**
-     * {@code DELETE  /clients/:id} : delete the "id" client.
-     *
-     * @param id the id of the client to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
+    @Transactional // <--- Ajouté pour sécuriser la suppression en cascade
     public ResponseEntity<Void> deleteClient(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Client : {}", id);
         clientService.delete(id);

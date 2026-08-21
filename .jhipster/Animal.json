@@ -26,6 +26,7 @@
       "fieldValues": "MALE,FEMELLE"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Animal",
   "pagination": "pagination",
   "relationships": [

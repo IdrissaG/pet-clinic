@@ -70,14 +70,16 @@
           <td>
             @if (peserAnimal.rendezVous) {
             <div>
-              <a [routerLink]="['/rendez-vous', peserAnimal.rendezVous.id, 'view']">{{ peserAnimal.rendezVous.id }}</a>
+              <a [routerLink]="['/rendez-vous', peserAnimal.rendezVous.id, 'view']"
+                >{{ peserAnimal.rendezVous.motif || ('RDV #' + peserAnimal.rendezVous.id) }}</a
+              >
             </div>
             }
           </td>
           <td>
             @if (peserAnimal.animal) {
             <div>
-              <a [routerLink]="['/animal', peserAnimal.animal.id, 'view']">{{ peserAnimal.animal.id }}</a>
+              <a [routerLink]="['/animal', peserAnimal.animal.id, 'view']">{{ peserAnimal.animal.nom }}</a>
             </div>
             }
           </td>

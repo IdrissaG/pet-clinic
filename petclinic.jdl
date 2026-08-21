@@ -78,3 +78,5 @@ relationship ManyToOne {
 paginate Clinique, Medecin, Client, Animal, RendezVous, PeserAnimal with pagination
 
 service Clinique, Medecin, Client, Animal, RendezVous, PeserAnimal with serviceClass
+
+filter Animal

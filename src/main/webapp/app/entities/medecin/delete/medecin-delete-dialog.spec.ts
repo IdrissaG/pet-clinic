@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vitest } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap/modal';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { MedecinService } from '../service/medecin.service';
 
@@ -36,6 +36,21 @@ describe('Medecin Management Delete Component', () => {
       // THEN
       expect(service.delete).toHaveBeenCalledWith(123);
       expect(mockActiveModal.close).toHaveBeenCalledWith('deleted');
+    });
+
+    it('should not close the modal when the delete fails (e.g. medecin with rendez-vous)', () => {
+      // GIVEN
+      vitest.spyOn(service, 'delete').mockReturnValue(throwError(() => new Error('error.medecinAvecRendezVous')));
+      vitest.spyOn(mockActiveModal, 'close');
+      vitest.spyOn(mockActiveModal, 'dismiss');
+
+      // WHEN
+      comp.confirmDelete(123);
+
+      // THEN
+      expect(service.delete).toHaveBeenCalledWith(123);
+      expect(mockActiveModal.close).not.toHaveBeenCalled();
+      expect(mockActiveModal.dismiss).not.toHaveBeenCalled();
     });
 
     it('should not call delete service on clear', () => {

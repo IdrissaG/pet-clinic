@@ -37,6 +37,14 @@
             >{{ {"null":"","MALE":"MALE","FEMELLE":"FEMELLE"}[animalRef.sexe ?? 'null'] }}</span
           >
         </dd>
+        <dt><span jhiTranslate="petclinicApp.animal.dernierPoids">Dernier poids</span></dt>
+        <dd>
+          @if (dernierPoids(); as poids) {
+          <span>{{ poids | number: '1.1-1' }} kg</span>
+          } @else {
+          <span>-</span>
+          }
+        </dd>
         <dt><span jhiTranslate="petclinicApp.animal.client">Client</span></dt>
         <dd>
           @if (animal()!.client) {

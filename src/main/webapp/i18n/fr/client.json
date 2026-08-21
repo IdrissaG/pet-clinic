@@ -8,6 +8,10 @@
         "createOrEditLabel": "Créer ou éditer un Client",
         "notFound": "Aucun Client trouvé"
       },
+      "search": {
+        "label": "Rechercher un client",
+        "placeholder": "Nom, prénom, téléphone, email..."
+      },
       "created": "Un nouveau Client a été créé avec l'identifiant {{ param }}",
       "updated": "Le Client avec l'identifiant {{ param }} a été mis à jour",
       "deleted": "Le Client avec l'identifiant {{ param }} a été supprimé",

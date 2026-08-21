@@ -8,6 +8,9 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { isPresent } from 'app/core/util/operators';
 import { IClient, NewClient } from '../client.model';
 
+export type EntityResponseType = HttpResponse<IClient>;
+export type EntityArrayResponseType = HttpResponse<IClient[]>;
+
 export type PartialUpdateClient = Partial<IClient> & Pick<IClient, 'id'>;
 
 @Injectable()
@@ -51,7 +54,7 @@ export class ClientService extends ClientsService {
     return this.http.get<IClient>(`${this.resourceUrl}/${encodeURIComponent(id)}`);
   }
 
-  query(req?: any): Observable<HttpResponse<IClient[]>> {
+  query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IClient[]>(this.resourceUrl, { params: options, observe: 'response' });
   }

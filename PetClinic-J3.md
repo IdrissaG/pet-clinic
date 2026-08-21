@@ -15,36 +15,43 @@ Les modules de base commencent à prendre forme. Aujourd'hui : on branche la rec
 ## 1. Tâches par groupe
 
 ### G1 — Cliniques
+
 - [ ] Finaliser la personnalisation de la liste (tri, libellés).
 - [ ] Implémenter la recherche par nom de clinique sur la liste.
 - [ ] Tester le cas limite : suppression d'une clinique qui a des médecins rattachés (voir avec G2 quel comportement adopter — blocage ou confirmation).
 
 ### G2 — Médecins
+
 - [ ] Implémenter le filtre par clinique et par spécialité.
 - [ ] Finaliser le formulaire (sélection clinique lisible, validation email).
 - [ ] Se coordonner avec G1 sur le comportement en cas de suppression de clinique.
 
 ### G3 — Clients
+
 - [ ] Implémenter la recherche par nom/prénom.
 - [ ] Sur la fiche client, afficher la liste des animaux rattachés (coordination avec G4 sur le format d'affichage).
 - [ ] Finaliser les validations de formulaire.
 
 ### G4 — Animaux
+
 - [ ] Implémenter le filtre par espèce.
 - [ ] Finaliser l'affichage du poids et de la date de naissance (formatage lisible).
 - [ ] Fournir à G3 le format d'affichage résumé d'un animal (nom + espèce) pour la fiche client.
 
 ### G5 — Rendez-vous
+
 - [ ] Finaliser la règle métier "pas de rendez-vous dans le passé" côté back-end, avec message d'erreur clair renvoyé au front.
 - [ ] Afficher ce message d'erreur proprement côté Angular (pas juste une erreur 400 brute).
 - [ ] Implémenter le filtre "rendez-vous du jour" sur la liste (utile aussi pour G6).
 
 ### G6 — Recherche & Dashboard
+
 - [ ] Câbler le dashboard sur les vraies données : nombre total d'animaux (appel à l'API `Animal`), rendez-vous du jour (réutiliser le filtre de G5).
 - [ ] Avancer sur l'harmonisation visuelle des barres de recherche entre les modules (cohérence avec G1/G2/G3/G4).
 - [ ] Vérifier les traductions i18n restantes sur les libellés génériques.
 
 ### G7 — Intégration & JHipster
+
 - [ ] Traiter en une seule PR groupée les demandes de modification du JDL remontées hier (nouveaux attributs, ajustements de relations).
 - [ ] Réimporter le JDL mis à jour et vérifier que ça ne casse rien pour les groupes déjà avancés.
 - [ ] Faire les premières revues de code sur les PR ouvertes hier (G1 à G6) et guider vers un premier merge propre dans `main`.

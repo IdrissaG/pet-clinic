@@ -18,6 +18,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "animal")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Animal implements Serializable {
 
     @Serial

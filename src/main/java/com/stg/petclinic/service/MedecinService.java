@@ -2,6 +2,7 @@ package com.stg.petclinic.service;
 
 import com.stg.petclinic.domain.Medecin;
 import com.stg.petclinic.repository.MedecinRepository;
+import com.stg.petclinic.repository.RendezVousRepository;
 import java.util.Optional;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
@@ -22,8 +23,11 @@ public class MedecinService {
 
     private final MedecinRepository medecinRepository;
 
-    public MedecinService(MedecinRepository medecinRepository) {
+    private final RendezVousRepository rendezVousRepository;
+
+    public MedecinService(MedecinRepository medecinRepository, RendezVousRepository rendezVousRepository) {
         this.medecinRepository = medecinRepository;
+        this.rendezVousRepository = rendezVousRepository;
     }
 
     /**
@@ -84,6 +88,20 @@ public class MedecinService {
     }
 
     /**
+     * Get all the medecins matching the given filters.
+     *
+     * @param pageable the pagination information.
+     * @param cliniqueId optional clinique id filter.
+     * @param specialite optional specialite filter (partial, case-insensitive).
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<Medecin> findAll(Pageable pageable, Long cliniqueId, String specialite) {
+        LOG.debug("Request to get all Medecins with cliniqueId={}, specialite={}", cliniqueId, specialite);
+        return medecinRepository.findByFilters(cliniqueId, specialite, pageable);
+    }
+
+    /**
      * Get one medecin by id.
      *
      * @param id the id of the entity.
@@ -102,6 +120,9 @@ public class MedecinService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Medecin : {}", id);
+        if (rendezVousRepository.existsByMedecinId(id)) {
+            throw new MedecinAvecRendezVousException();
+        }
         medecinRepository.deleteById(id);
     }
 

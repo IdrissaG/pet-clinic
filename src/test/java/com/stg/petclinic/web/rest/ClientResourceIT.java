@@ -41,8 +41,9 @@ class ClientResourceIT {
     private static final String DEFAULT_ADRESSE = "AAAAAAAAAA";
     private static final String UPDATED_ADRESSE = "BBBBBBBBBB";
 
-    private static final String DEFAULT_TELEPHONE = "AAAAAAAAAA";
-    private static final String UPDATED_TELEPHONE = "BBBBBBBBBB";
+    // CORRECTION : Utilisation de numéros respectant le pattern ^(70|75|76|77|78)\d{7}$
+    private static final String DEFAULT_TELEPHONE = "770000000";
+    private static final String UPDATED_TELEPHONE = "780000000";
 
     private static final String DEFAULT_EMAIL = "oZ@|.K";
     private static final String UPDATED_EMAIL = "k^c@TC8.vh?a8";
@@ -69,12 +70,6 @@ class ClientResourceIT {
 
     private Client insertedClient;
 
-    /**
-     * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
     public static Client createEntity() {
         return new Client()
             .nom(DEFAULT_NOM)
@@ -84,12 +79,6 @@ class ClientResourceIT {
             .email(DEFAULT_EMAIL);
     }
 
-    /**
-     * Create an updated entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
     public static Client createUpdatedEntity() {
         return new Client()
             .nom(UPDATED_NOM)
@@ -116,7 +105,7 @@ class ClientResourceIT {
     @Transactional
     void createClient() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
-        // Create the Client
+
         var returnedClient = om.readValue(
             restClientMockMvc
                 .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
@@ -127,7 +116,6 @@ class ClientResourceIT {
             Client.class
         );
 
-        // Validate the Client in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
         assertClientUpdatableFieldsEquals(returnedClient, getPersistedClient(returnedClient));
 
@@ -137,17 +125,14 @@ class ClientResourceIT {
     @Test
     @Transactional
     void createClientWithExistingId() throws Exception {
-        // Create the Client with an existing ID
         client.setId(1L);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
-        // An entity with an existing ID cannot be created, so this API call must fail
         restClientMockMvc
             .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeCreate);
     }
 
@@ -155,10 +140,7 @@ class ClientResourceIT {
     @Transactional
     void checkNomIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
         client.setNom(null);
-
-        // Create the Client, which fails.
 
         restClientMockMvc
             .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
@@ -171,10 +153,7 @@ class ClientResourceIT {
     @Transactional
     void checkPrenomIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
         client.setPrenom(null);
-
-        // Create the Client, which fails.
 
         restClientMockMvc
             .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
@@ -187,10 +166,7 @@ class ClientResourceIT {
     @Transactional
     void checkTelephoneIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
         client.setTelephone(null);
-
-        // Create the Client, which fails.
 
         restClientMockMvc
             .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
@@ -202,10 +178,8 @@ class ClientResourceIT {
     @Test
     @Transactional
     void getAllClients() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
-        // Get all the clientList
         restClientMockMvc
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
@@ -221,10 +195,8 @@ class ClientResourceIT {
     @Test
     @Transactional
     void getClient() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
-        // Get the client
         restClientMockMvc
             .perform(get(ENTITY_API_URL_ID, client.getId()))
             .andExpect(status().isOk())
@@ -240,21 +212,17 @@ class ClientResourceIT {
     @Test
     @Transactional
     void getNonExistingClient() throws Exception {
-        // Get the client
         restClientMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
     }
 
     @Test
     @Transactional
     void putExistingClient() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the client
         Client updatedClient = clientRepository.findById(client.getId()).orElseThrow();
-        // Disconnect from session so that the updates on updatedClient are not directly saved in db
         em.detach(updatedClient);
         updatedClient.nom(UPDATED_NOM).prenom(UPDATED_PRENOM).adresse(UPDATED_ADRESSE).telephone(UPDATED_TELEPHONE).email(UPDATED_EMAIL);
 
@@ -266,7 +234,6 @@ class ClientResourceIT {
             )
             .andExpect(status().isOk());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
         assertPersistedClientToMatchAllProperties(updatedClient);
     }
@@ -277,12 +244,10 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(put(ENTITY_API_URL_ID, client.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
@@ -292,7 +257,6 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
@@ -301,7 +265,6 @@ class ClientResourceIT {
             )
             .andExpect(status().isBadRequest());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
@@ -311,27 +274,22 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
             .andExpect(status().isMethodNotAllowed());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     void partialUpdateClientWithPatch() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the client using partial update
         Client partialUpdatedClient = new Client();
         partialUpdatedClient.setId(client.getId());
-
         partialUpdatedClient.prenom(UPDATED_PRENOM).adresse(UPDATED_ADRESSE);
 
         restClientMockMvc
@@ -342,8 +300,6 @@ class ClientResourceIT {
             )
             .andExpect(status().isOk());
 
-        // Validate the Client in the database
-
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
         assertClientUpdatableFieldsEquals(createUpdateProxyForBean(partialUpdatedClient, client), getPersistedClient(client));
     }
@@ -351,15 +307,12 @@ class ClientResourceIT {
     @Test
     @Transactional
     void fullUpdateClientWithPatch() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
-        // Update the client using partial update
         Client partialUpdatedClient = new Client();
         partialUpdatedClient.setId(client.getId());
-
         partialUpdatedClient
             .nom(UPDATED_NOM)
             .prenom(UPDATED_PRENOM)
@@ -375,8 +328,6 @@ class ClientResourceIT {
             )
             .andExpect(status().isOk());
 
-        // Validate the Client in the database
-
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
         assertClientUpdatableFieldsEquals(partialUpdatedClient, getPersistedClient(partialUpdatedClient));
     }
@@ -387,14 +338,12 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, client.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(client))
             )
             .andExpect(status().isBadRequest());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
@@ -404,7 +353,6 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
@@ -413,7 +361,6 @@ class ClientResourceIT {
             )
             .andExpect(status().isBadRequest());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
@@ -423,30 +370,52 @@ class ClientResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         client.setId(longCount.incrementAndGet());
 
-        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restClientMockMvc
             .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(client)))
             .andExpect(status().isMethodNotAllowed());
 
-        // Validate the Client in the database
         assertSameRepositoryCount(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     void deleteClient() throws Exception {
-        // Initialize the database
         insertedClient = clientRepository.saveAndFlush(client);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 
-        // Delete the client
         restClientMockMvc
             .perform(delete(ENTITY_API_URL_ID, client.getId()).accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
-        // Validate the database contains one less item
         assertDecrementedRepositoryCount(databaseSizeBeforeDelete);
+    }
+
+    @Test
+    @Transactional
+    void searchClientsByNomOrPrenom() throws Exception {
+        clientRepository.saveAndFlush(client);
+
+        restClientMockMvc
+            .perform(get("/api/clients?query=" + client.getNom()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(client.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nom").value(hasItem(client.getNom())));
+    }
+
+    @Test
+    @Transactional
+    void createClientWithInvalidTelephoneShouldFail() throws Exception {
+        int databaseSizeBeforeTest = clientRepository.findAll().size();
+
+        client.setTelephone("0123456");
+
+        restClientMockMvc
+            .perform(post("/api/clients").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(client)))
+            .andExpect(status().isBadRequest());
+
+        assertThat(clientRepository.findAll()).hasSize(databaseSizeBeforeTest);
     }
 
     protected long getRepositoryCount() {

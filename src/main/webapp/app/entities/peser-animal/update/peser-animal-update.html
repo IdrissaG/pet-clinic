@@ -47,7 +47,7 @@
             @if (editForm.get(['rendezVous'])!.value === null) {
             <option [ngValue]="null" selected></option>
             } @for (rendezVousOption of rendezVousesCollection(); track $index) {
-            <option [ngValue]="rendezVousOption">{{ rendezVousOption.id }}</option>
+            <option [ngValue]="rendezVousOption">{{ rendezVousOption.motif || ('RDV #' + rendezVousOption.id) }}</option>
             }
           </select>
         </div>

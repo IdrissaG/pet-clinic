@@ -43,16 +43,24 @@ export class ClientFormService {
           validators: [Validators.required],
         },
       ),
+
       nom: new FormControl(clientRawValue.nom, {
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.minLength(2), Validators.maxLength(30)],
       }),
+
       prenom: new FormControl(clientRawValue.prenom, {
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.minLength(2), Validators.maxLength(50)],
       }),
+
       adresse: new FormControl(clientRawValue.adresse),
+
       telephone: new FormControl(clientRawValue.telephone, {
-        validators: [Validators.required],
+        validators: [
+          Validators.required,
+          Validators.pattern('^(70|75|76|77|78)\\d{7}$'), // NOSONAR
+        ],
       }),
+
       email: new FormControl(clientRawValue.email, {
         validators: [
           Validators.pattern('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$'), // NOSONAR
@@ -67,6 +75,7 @@ export class ClientFormService {
 
   resetForm(form: ClientFormGroup, client: ClientFormGroupInput): void {
     const clientRawValue = { ...this.getFormDefaults(), ...client };
+
     form.reset({
       ...clientRawValue,
       id: { value: clientRawValue.id, disabled: true },

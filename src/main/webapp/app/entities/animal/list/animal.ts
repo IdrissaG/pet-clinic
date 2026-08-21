@@ -20,6 +20,7 @@ import { SortByDirective, SortDirective, SortService, type SortState, sortStateS
 import { IAnimal } from '../animal.model';
 import { AnimalDeleteDialog } from '../delete/animal-delete-dialog';
 import { AnimalService } from '../service/animal.service';
+import { Espece } from 'app/entities/enumerations/espece.model'; // vérifie le chemin exact
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +50,8 @@ export class Animal implements OnInit {
   readonly itemsPerPage = signal(ITEMS_PER_PAGE);
   readonly totalItems = signal(0);
   readonly page = signal(1);
+  readonly especeFilter = signal<Espece | null>(null);
+  readonly especes = Object.values(Espece);
 
   readonly router = inject(Router);
   protected readonly animalService = inject(AnimalService);
@@ -105,6 +108,12 @@ export class Animal implements OnInit {
     this.handleNavigation(page, this.sortState());
   }
 
+  filtrerParEspece(espece: string): void {
+    this.especeFilter.set(espece === '' ? null : (espece as Espece));
+    this.page.set(1);
+    this.load();
+  }
+
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
     const page = params.get(PAGE_HEADER);
     this.page.set(+(page ?? 1));
@@ -126,6 +135,10 @@ export class Animal implements OnInit {
       size: this.itemsPerPage(),
       sort: this.sortService.buildSortParam(this.sortState()),
     };
+    const espece = this.especeFilter();
+    if (espece) {
+      queryObject['espece.equals'] = espece;
+    }
     this.animalService.animalsParams.set(queryObject);
   }
 

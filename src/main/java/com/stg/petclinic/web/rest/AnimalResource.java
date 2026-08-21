@@ -2,7 +2,9 @@ package com.stg.petclinic.web.rest;
 
 import com.stg.petclinic.domain.Animal;
 import com.stg.petclinic.repository.AnimalRepository;
+import com.stg.petclinic.service.AnimalQueryService;
 import com.stg.petclinic.service.AnimalService;
+import com.stg.petclinic.service.criteria.AnimalCriteria;
 import com.stg.petclinic.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -42,9 +44,12 @@ public class AnimalResource {
 
     private final AnimalRepository animalRepository;
 
-    public AnimalResource(AnimalService animalService, AnimalRepository animalRepository) {
+    private final AnimalQueryService animalQueryService;
+
+    public AnimalResource(AnimalService animalService, AnimalRepository animalRepository, AnimalQueryService animalQueryService) {
         this.animalService = animalService;
         this.animalRepository = animalRepository;
+        this.animalQueryService = animalQueryService;
     }
 
     /**
@@ -139,14 +144,31 @@ public class AnimalResource {
      * {@code GET  /animals} : get all the Animals.
      *
      * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Animals in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Animal>> getAllAnimals(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Animals");
-        Page<Animal> page = animalService.findAll(pageable);
+    public ResponseEntity<List<Animal>> getAllAnimals(
+        AnimalCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get Animals by criteria: {}", criteria);
+
+        Page<Animal> page = animalQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /animals/count} : count all the animals.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countAnimals(AnimalCriteria criteria) {
+        LOG.debug("REST request to count Animals by criteria: {}", criteria);
+        return ResponseEntity.ok().body(animalQueryService.countByCriteria(criteria));
     }
 
     /**
