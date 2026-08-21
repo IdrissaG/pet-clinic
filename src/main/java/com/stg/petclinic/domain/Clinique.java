@@ -32,11 +32,12 @@ public class Clinique implements Serializable {
     @Column(name = "nom", nullable = false)
     private String nom;
 
-    @NotNull
+    @NotBlank
     @Column(name = "adresse", nullable = false)
     private String adresse;
 
     @NotNull
+    @Pattern(regexp = "^\\+221[0-9]{9}$", message = "Le telephone doit etre au format senegalais : +221 suivi de 9 chiffres")
     @Column(name = "telephone", nullable = false)
     private String telephone;
 

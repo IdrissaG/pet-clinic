@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center">
+﻿<div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2
@@ -6,7 +6,7 @@
         data-cy="RendezVousCreateUpdateHeading"
         jhiTranslate="petclinicApp.rendezVous.home.createOrEditLabel"
       >
-        Créer ou éditer un Rendez Vous
+        CrÃ©er ou Ã©diter un Rendez Vous
       </h2>
 
       <div>
@@ -38,7 +38,7 @@
             <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
             }
             <small class="form-text text-danger" [hidden]="!dateRef.errors?.datetimelocal" jhiTranslate="entity.validation.datetimelocal"
-              >Ce champ doit être une date et une heure.</small
+              >Ce champ doit Ãªtre une date et une heure.</small
             >
           </div>
           }
@@ -67,7 +67,7 @@
             <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
             }
             <small class="form-text text-danger" [hidden]="!dureeRef.errors?.number" jhiTranslate="entity.validation.number"
-              >Ce champ doit être un nombre.</small
+              >Ce champ doit Ãªtre un nombre.</small
             >
           </div>
           }
@@ -160,6 +160,7 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
           class="btn btn-primary"
+          data-cy="entitySaveButton"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

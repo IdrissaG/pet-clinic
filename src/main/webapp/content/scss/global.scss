@@ -1,4 +1,4 @@
-@import 'bootstrap-variables';
+﻿@import 'bootstrap-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 
@@ -234,3 +234,87 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   }
 }
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+// Bouton "Actualiser la liste" : fond noir, texte blanc
+.btn-refresh-list {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+.btn-refresh-list:hover {
+  background-color: #222222;
+  border-color: #222222;
+  color: #ffffff;
+}
+
+// Bouton "CrÃ©er un nouveau..." : fond orange, texte blanc
+.jh-create-entity {
+  background-color: #ff8c00;
+  border-color: #ff8c00;
+  color: #ffffff;
+}
+.jh-create-entity:hover {
+  background-color: #e07b00;
+  border-color: #e07b00;
+  color: #ffffff;
+}
+
+// Bouton "Voir" dans les listes : fond noir, texte blanc
+[data-cy='entityDetailsButton'] {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+[data-cy='entityDetailsButton']:hover {
+  background-color: #222222 !important;
+  border-color: #222222 !important;
+  color: #ffffff !important;
+}
+
+// Bouton "Editer" dans les listes : fond orange, texte blanc
+[data-cy='entityEditButton'] {
+  background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+  color: #ffffff !important;
+}
+[data-cy='entityEditButton']:hover {
+  background-color: #e07b00 !important;
+  border-color: #e07b00 !important;
+  color: #ffffff !important;
+}
+
+// Bouton "Retour" dans les pages détail : fond noir, texte blanc
+[data-cy='entityDetailsBackButton'] {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+[data-cy='entityDetailsBackButton']:hover {
+  background-color: #222222 !important;
+  border-color: #222222 !important;
+  color: #ffffff !important;
+}
+
+// Bouton "Annuler" dans les formulaires : fond noir, texte blanc
+[data-cy='entityCreateCancelButton'] {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+[data-cy='entityCreateCancelButton']:hover {
+  background-color: #222222 !important;
+  border-color: #222222 !important;
+  color: #ffffff !important;
+}
+
+// Bouton "Sauvegarder" dans les formulaires : fond orange, texte blanc
+[data-cy='entitySaveButton'] {
+  background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+  color: #ffffff !important;
+}
+[data-cy='entitySaveButton']:hover {
+  background-color: #e07b00 !important;
+  border-color: #e07b00 !important;
+  color: #ffffff !important;
+}

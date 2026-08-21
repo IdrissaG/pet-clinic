@@ -73,7 +73,7 @@
         <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>
 
-      <a [routerLink]="['/client', clientRef.id, 'edit']" class="btn btn-primary">
+      <a [routerLink]="['/client', clientRef.id, 'edit']" class="btn btn-primary" data-cy="entityEditButton">
         <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
       </a>
     </div>

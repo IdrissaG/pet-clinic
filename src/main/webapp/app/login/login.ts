@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, inject, signal, viewChild } from '@angular/core';
+﻿import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnInit, inject, signal, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -39,7 +39,7 @@ export default class Login implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.username().nativeElement.focus();
+    this.username()?.nativeElement.focus();
   }
 
   login(): void {

@@ -1,8 +1,8 @@
-<div class="d-flex justify-content-center">
+﻿<div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2 id="jhi-medecin-heading" data-cy="MedecinCreateUpdateHeading" jhiTranslate="petclinicApp.medecin.home.createOrEditLabel">
-        Créer ou éditer un Medecin
+        CrÃ©er ou Ã©diter un Medecin
       </h2>
 
       <div>
@@ -70,7 +70,7 @@
             <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
             } @if (emailRef.errors?.pattern) {
             <small class="form-text text-danger" jhiTranslate="entity.validation.pattern" [translateValues]="{ pattern: 'Email' }"
-              >Ce champ doit suivre l&apos;expression régulière Email.</small
+              >Ce champ doit suivre l&apos;expression rÃ©guliÃ¨re Email.</small
             >
             }
           </div>
@@ -119,6 +119,7 @@
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
           class="btn btn-primary"
+          data-cy="entitySaveButton"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

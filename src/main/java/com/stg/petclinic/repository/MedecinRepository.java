@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface MedecinRepository extends JpaRepository<Medecin, Long> {
+    boolean existsByCliniqueId(Long cliniqueId);
+
     @Query(
         """
         select m from Medecin m

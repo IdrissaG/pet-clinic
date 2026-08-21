@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap, Router, RouterLink } from '@angular/router';
 
@@ -42,6 +42,17 @@ export class Clinique implements OnInit {
   subscription: Subscription | null = null;
   readonly cliniques = signal<IClinique[]>([]);
 
+  readonly searchTerm = signal('');
+  readonly filteredCliniques = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    if (!term) {
+      return this.cliniques();
+    }
+    return this.cliniques().filter(
+      clinique => (clinique.nom ?? '').toLowerCase().includes(term) || (clinique.adresse ?? '').toLowerCase().includes(term),
+    );
+  });
+
   sortState = sortStateSignal({});
 
   readonly itemsPerPage = signal(ITEMS_PER_PAGE);
@@ -69,6 +80,10 @@ export class Clinique implements OnInit {
   }
 
   trackId = (item: IClinique): number => this.cliniqueService.getCliniqueIdentifier(item);
+
+  updateSearchTerm(term: string): void {
+    this.searchTerm.set(term);
+  }
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])

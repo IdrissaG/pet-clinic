@@ -1,4 +1,4 @@
-@import 'bootstrap/scss/functions';
+﻿@import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 
 /* ==========================================================================
@@ -33,4 +33,14 @@ Logo styles
   vertical-align: middle;
   background: url('/content/images/logo-jhipster.png') no-repeat center center;
   background-size: contain;
+}
+
+.navbar-sonatel-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% - 2cm), -50%);
+  height: 65px;
+  width: auto;
+  pointer-events: none;
 }

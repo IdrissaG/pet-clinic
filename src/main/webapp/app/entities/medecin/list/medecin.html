@@ -1,4 +1,4 @@
-<div>
+﻿<div>
   <h2 id="page-heading" data-cy="MedecinHeading">
     <span jhiTranslate="petclinicApp.medecin.home.title">Medecins</span>
 
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+      <button class="btn btn-info me-2 btn-refresh-list" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
         <span jhiTranslate="petclinicApp.medecin.home.refreshListLabel">Actualiser la liste</span>
       </button>
@@ -48,7 +48,7 @@
         [routerLink]="['/medecin/new']"
       >
         <fa-icon icon="plus" />
-        <span jhiTranslate="petclinicApp.medecin.home.createLabel">Créer un nouveau Medecin</span>
+        <span jhiTranslate="petclinicApp.medecin.home.createLabel">CrÃ©er un nouveau Medecin</span>
       </button>
     </div>
   </h2>
@@ -59,7 +59,7 @@
 
   @if (medecins().length === 0) {
   <div class="alert alert-warning" id="no-result">
-    <span jhiTranslate="petclinicApp.medecin.home.notFound">Aucun Medecin trouvé</span>
+    <span jhiTranslate="petclinicApp.medecin.home.notFound">Aucun Medecin trouvÃ©</span>
   </div>
   } @else {
   <div class="table-responsive table-entities" id="entities">
@@ -158,7 +158,8 @@
   </div>
   } @if (medecins().length > 0) {
   <div>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-between align-items-end">
+      <img src="content/images/sonatel-orange-logo.jpg" alt="Sonatel Orange" style="height: 70px" />
       <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
     </div>
 

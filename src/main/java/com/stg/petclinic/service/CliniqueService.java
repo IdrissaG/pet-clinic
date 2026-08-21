@@ -2,6 +2,8 @@ package com.stg.petclinic.service;
 
 import com.stg.petclinic.domain.Clinique;
 import com.stg.petclinic.repository.CliniqueRepository;
+import com.stg.petclinic.repository.MedecinRepository;
+import com.stg.petclinic.web.rest.errors.BadRequestAlertException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
@@ -21,9 +23,11 @@ public class CliniqueService {
     private static final Logger LOG = LoggerFactory.getLogger(CliniqueService.class);
 
     private final CliniqueRepository cliniqueRepository;
+    private final MedecinRepository medecinRepository;
 
-    public CliniqueService(CliniqueRepository cliniqueRepository) {
+    public CliniqueService(CliniqueRepository cliniqueRepository, MedecinRepository medecinRepository) {
         this.cliniqueRepository = cliniqueRepository;
+        this.medecinRepository = medecinRepository;
     }
 
     /**
@@ -100,6 +104,13 @@ public class CliniqueService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Clinique : {}", id);
+        if (medecinRepository.existsByCliniqueId(id)) {
+            throw new BadRequestAlertException(
+                "Impossible de supprimer cette clinique : des medecins y sont rattaches",
+                "clinique",
+                "cliniquehasmedecins"
+            );
+        }
         cliniqueRepository.deleteById(id);
     }
 
