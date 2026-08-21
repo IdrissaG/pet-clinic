@@ -36,8 +36,8 @@ public class Clinique implements Serializable {
     @Column(name = "adresse", nullable = false)
     private String adresse;
 
-    @NotBlank
-    @Pattern(regexp = "^\\+?[0-9 ]{8,20}$", message = "Le telephone doit contenir entre 8 et 20 chiffres, avec un + optionnel en prefixe")
+    @NotNull
+    @Pattern(regexp = "^\+221[0-9]{9}$", message = "Le telephone doit etre au format senegalais : +221 suivi de 9 chiffres")
     @Column(name = "telephone", nullable = false)
     private String telephone;
 
