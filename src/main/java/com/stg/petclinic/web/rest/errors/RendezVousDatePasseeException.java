@@ -1,6 +1,5 @@
-package com.stg.petclinic.service;
+package com.stg.petclinic.web.rest.errors;
 
-import com.stg.petclinic.web.rest.errors.ErrorConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.ErrorResponseException;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause;

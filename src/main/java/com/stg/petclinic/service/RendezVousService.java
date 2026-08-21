@@ -2,6 +2,7 @@ package com.stg.petclinic.service;
 
 import com.stg.petclinic.domain.RendezVous;
 import com.stg.petclinic.repository.RendezVousRepository;
+import com.stg.petclinic.web.rest.errors.RendezVousDatePasseeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
