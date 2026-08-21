@@ -55,6 +55,32 @@
         </dd>
       </dl>
 
+      <h4 jhiTranslate="petclinicApp.animal.historiquePoids">Historique des pesées</h4>
+      @if (historiquePoids().length > 0) {
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col"><span jhiTranslate="petclinicApp.peserAnimal.rendezVous">Date</span></th>
+            <th scope="col"><span jhiTranslate="petclinicApp.peserAnimal.poids">Poids</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (mesure of historiquePoids(); track mesure.id) {
+          <tr>
+            <td>
+              @if (mesure.rendezVous?.date) { {{ mesure.rendezVous?.date | formatMediumDate }} } @else {
+              <span class="text-muted">-</span>
+              }
+            </td>
+            <td>{{ mesure.poids | number: '1.1-1' }} kg</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="text-muted" jhiTranslate="petclinicApp.animal.aucunePesee">Aucune pesée enregistrée.</p>
+      }
+
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
         <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
       </button>

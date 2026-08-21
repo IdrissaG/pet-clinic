@@ -32,7 +32,9 @@
       "allEspeces": "Toutes espèces",
       "clientPrenom": "Prénom du client",
       "clientNom": "Nom du client",
-      "client": "Client"
+      "client": "Client",
+      "historiquePoids": "Historique des pesées",
+      "aucunePesee": "Aucune pesée enregistrée."
     }
   }
 }
