@@ -1,14 +1,26 @@
 @if (client) {
 <form name="deleteForm" (ngSubmit)="confirmDelete(client.id!)">
-  <div class="modal-header">
+  <div class="modal-header bg-danger text-white">
     <h4 class="modal-title" data-cy="clientDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirmation de suppression</h4>
   </div>
 
   <div class="modal-body">
     <jhi-alert-error />
-    <p id="jhi-delete-client-heading" jhiTranslate="petclinicApp.client.delete.question" [translateValues]="{ id: client.id }">
-      Êtes-vous certain de vouloir supprimer le Client {{ client.id }} ?
+
+    <p id="jhi-delete-client-heading">
+      Êtes-vous certain de vouloir supprimer le client <strong>{{ client.nom }} {{ client.prenom }}</strong> (ID: {{ client.id }}) ?
     </p>
+
+    <!-- Avertissement si le client a des animaux -->
+    @if (nbAnimaux > 0) {
+    <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
+      <fa-icon icon="exclamation-triangle" class="me-3 fa-2x text-warning" />
+      <div>
+        <strong>Attention :</strong> Ce client possède <strong>{{ nbAnimaux }} animal(aux)</strong> rattaché(s). La suppression du client
+        entraînera également la <strong>suppression définitive</strong> de ses animaux et de leur historique.
+      </div>
+    </div>
+    }
   </div>
 
   <div class="modal-footer">
@@ -17,7 +29,7 @@
     </button>
 
     <button id="jhi-confirm-delete-client" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
-      <fa-icon icon="times" />&nbsp;<span jhiTranslate="entity.action.delete">Supprimer</span>
+      <fa-icon icon="times" />&nbsp;<span jhiTranslate="entity.action.delete">Supprimer définitivement</span>
     </button>
   </div>
 </form>

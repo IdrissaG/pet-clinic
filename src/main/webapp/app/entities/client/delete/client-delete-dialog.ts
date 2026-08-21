@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap/modal';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faBan, faTimes, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { ITEM_DELETED_EVENT } from 'app/config/navigation.constants';
 import { AlertError } from 'app/shared/alert/alert-error';
@@ -11,15 +12,34 @@ import { IClient } from '../client.model';
 import { ClientService } from '../service/client.service';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  selector: 'jhi-client-delete-dialog',
   templateUrl: './client-delete-dialog.html',
-  imports: [TranslateDirective, FormsModule, FontAwesomeModule, AlertError],
+  imports: [FormsModule, FontAwesomeModule, AlertError, TranslateDirective, TranslatePipe],
 })
-export class ClientDeleteDialog {
+export class ClientDeleteDialog implements OnInit {
   client?: IClient;
+  nbAnimaux = 0;
 
-  protected readonly clientService = inject(ClientService);
-  protected readonly activeModal = inject(NgbActiveModal);
+  protected clientService = inject(ClientService);
+  protected activeModal = inject(NgbActiveModal);
+  private iconLibrary = inject(FaIconLibrary);
+
+  constructor() {
+    this.iconLibrary.addIcons(faBan, faTimes, faExclamationTriangle);
+  }
+
+  ngOnInit(): void {
+    if (this.client?.id) {
+      this.clientService.find(this.client.id).subscribe((res: any) => {
+        const clientData = res.body ?? res;
+        if (clientData) {
+          this.client = clientData;
+          this.nbAnimaux = Array.isArray(clientData.animals) ? clientData.animals.length : 0;
+        }
+      });
+    }
+  }
 
   cancel(): void {
     this.activeModal.dismiss();
