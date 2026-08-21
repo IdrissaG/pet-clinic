@@ -4,19 +4,19 @@
       "home": {
         "title": "Cliniques",
         "refreshListLabel": "Actualiser la liste",
-        "createLabel": "Créer une nouvelle Clinique",
-        "createOrEditLabel": "Créer ou éditer une Clinique",
-        "notFound": "Aucun Clinique trouvé"
+        "createLabel": "Creer une nouvelle Clinique",
+        "createOrEditLabel": "Creer ou editer une Clinique",
+        "notFound": "Aucune Clinique trouvee"
       },
       "search": {
         "label": "Rechercher une clinique",
         "placeholder": "Nom de la clinique, adresse, ville..."
       },
-      "created": "Une nouvelle Clinique a été créée avec l'identifiant {{ param }}",
-      "updated": "La Clinique avec l'identifiant {{ param }} a été mise à jour",
-      "deleted": "La Clinique avec l'identifiant {{ param }} a été supprimée",
+      "created": "Une nouvelle Clinique a ete creee avec l'identifiant {{ param }}",
+      "updated": "La Clinique avec l'identifiant {{ param }} a ete mise a jour",
+      "deleted": "La Clinique avec l'identifiant {{ param }} a ete supprimee",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer la Clinique {{ id }} ?"
+        "question": "Etes-vous certain de vouloir supprimer la Clinique {{ id }} ?"
       },
       "detail": {
         "title": "Clinique"
@@ -24,7 +24,7 @@
       "id": "ID",
       "nom": "Nom",
       "adresse": "Adresse",
-      "telephone": "Telephone",
+      "telephone": "Téléphone",
       "medecin": "Medecin",
       "rendezVous": "Rendez Vous"
     }
