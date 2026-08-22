@@ -1,0 +1,5 @@
+version: 2
+secret:
+  ignored-matches:
+    - name: JHipster dev database password (local dev only)
+      match: password: petclinic
