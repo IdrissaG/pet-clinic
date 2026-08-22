@@ -48,7 +48,7 @@ export class CliniqueFormService {
         validators: [Validators.required],
       }),
       telephone: new FormControl(cliniqueRawValue.telephone, {
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.pattern(/^\+221[0-9]{9}$/)],
       }),
     });
   }
