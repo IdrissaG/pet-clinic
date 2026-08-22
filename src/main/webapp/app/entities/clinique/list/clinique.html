@@ -1,4 +1,4 @@
-﻿<div>
+<div>
   <h2 id="page-heading" data-cy="CliniqueHeading">
     <span jhiTranslate="petclinicApp.clinique.home.title">Cliniques</span>
 
@@ -100,7 +100,7 @@
           <td><a [routerLink]="['/clinique', clinique.id, 'view']">{{ clinique.id }}</a></td>
           <td>{{ clinique.nom }}</td>
           <td>{{ clinique.adresse }}</td>
-          <td>{{ clinique.téléphone }}</td>
+          <td>{{ clinique.telephone }}</td>
           <td class="text-end">
             <div class="btn-group">
               <a [routerLink]="['/clinique', clinique.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
