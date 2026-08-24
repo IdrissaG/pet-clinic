@@ -227,8 +227,7 @@ export class RendezVous implements OnInit {
 
     for (const item of items) {
       const label = this.dayLabel(item.date);
-      // const lastGroup = groups.at(-1);
-      const lastGroup = groups[groups.length - 1];
+      const lastGroup = groups.length > 0 ? groups[groups.length - 1] : undefined;
 
       if (lastGroup && lastGroup.label === label) {
         lastGroup.items.push(item);
